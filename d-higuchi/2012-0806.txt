@@ -1,0 +1,140 @@
+-----------------------------------------------------------------------------
+08/06
+
+■ブログ
+* CloudStackを使ってみよう[2]
+- 下書き作成。
+
+■scalr
+* CloudStack 連携は 2.2.14 でもうまくいかない
+- https://groups.google.com/forum/#!topic/scalr-discuss に返事なし。
+
+-----------------------------------------------------------------------------
+08/07
+
+■scalr
+* CloudStack 2.2.14 との連携を CentOS 5.8 インスタンスで試す。
+- インスタンスの OS は無関係に CloudStack とは連携できない。
+
+■knife-cloudstack
+* CloudStack 2.2.14 で試す → だめ。
+- No network list with basic networking
+  https://github.com/CloudStack/knife-cloudstack/issues/21
+* CloudStack 3.0.4 で試す → 成功。
+- This doesn't seem to work with Cloudstack3's basic mode:
+  https://github.com/CloudStack/knife-cloudstack/issues/1
+  の Pull Request #22 を当てればよい。
+
+■cloudstack-quickinstall
+* 質問対応
+- CloudStack 3.0.x を消した後で 2.2.x を入れるとゴミがたくさん残ってる。
+
+-----------------------------------------------------------------------------
+08/08
+
+■enStratus Chef-installer
+* ubuntu 12.04 → インストール失敗
+- libmysqlclient16-dev がない
+- service[mysql] が動作しない
+* ubuntu 10.04 → インストール成功
+- /etc/sudoers が置き換えられてしまって root 権限を得られなくなる。
+
+■CloudStack 3.0.x
+* 基本インストール
+- デフォルトだと DefaultSharedNetworkOfferingWithSGService になっていて
+  他ゲストと通信できなくなる。よって基本インストールを使わずに構築する。
+* 基本ネットワーク
+* TestZone
+- 192.168.25.1
+- 192.168.25.1
+- KVM
+- DefaultSharedNetworkOffering ←★
+- example.jp
+* Physical Network 1
+- 触らない。
+* TestPod
+- 192.168.25.1
+- 255.255.255.0
+- 192.168.25.120 - 192.168.25.139
+- 192.168.25.1
+- 255.255.255.0
+- 192.168.25.160 - 192.168.25.179
+* TestCluster
+* 192.168.25.111
+- root
+- cshost2012
+* TestStorage
+- nfs
+- 192.168.25.110
+- /export/primary
+* 192.168.25.110
+- /export/secondary
+
+-----------------------------------------------------------------------------
+08/09
+
+■CloudStack 3.0.4
+* 基本ネットワーク
+- デフォルトだと DefaultSharedNetworkOffering でもゲスト間通信不可だった。
+- virsh domiflist で仮想マシンの仮想インターフェイス一覧が取れる。
+- コンピューティングノードの以下の iptabeles FORWARD ルールが原因。
+
+-A FORWARD -o cloudbr0 -m physdev --physdev-is-bridged -j BF-cloudbr0 
+-A FORWARD -i cloudbr0 -m physdev --physdev-is-bridged -j BF-cloudbr0 
+-A FORWARD -o cloudbr0 -j DROP 
+-A FORWARD -i cloudbr0 -j DROP 
+
+- なぜか 1,2行目にマッチせずに 3.4行目の DROP に行き着いていた。
+  原因究明は後にして、3,4行目を削除することでゲスト間通信が可能になった。
+- 以下のルールも邪魔していた。
+
+  -A i-2-8-VM -j DROP
+  -A i-2-9-VM -j DROP
+
+* TestZone
+- 192.168.25.1
+- 192.168.25.1
+- KVM
+- DefaultSharedNetworkOffering
+- example.jp
+- パブリック [v]
+* 物理ネットワーク
+- Physical Network 1
+- 触らない
+* TestPod
+- 192.168.25.1
+- 255.255.255.0
+- 192.168.25.120 - 192.168.25.139
+* ゲストトラフィック
+- 192.168.25.1
+- 255.255.255.0
+- 192.168.25.160 - 192.168.25.179
+* TestCluster
+* 192.168.25.111
+- root
+- cshost2012
+* TestStorage
+- nfs
+- 192.168.25.110
+- /export/primary
+* 192.168.25.110
+- /export/secondary
+
+■knife-cloudstack
+* CloudStack 3.0.4 でテスト。
+- インスタンスを作ってさらに recipe[apache2] を実行することに成功。
+
+-----------------------------------------------------------------------------
+08/10
+
+■knife-cloudstack
+* Chef インストール済テンプレートを使用。
+- --no-bootstrap をつけてもなぜか Chef をインストールしようとする。バグ？
+- knife を実行するホストで chef-client が動いていたら動作がおかしくなる？
+  あるいは chef-server が動作しているホストで chef-client が動いていたら？
+
+■enStratus Chef-installer
+* ubuntu 10.04 → インストール成功
+- 事前に root になっておいて /etc/sudoers の書き換えを回避。
+
+-----------------------------------------------------------------------------

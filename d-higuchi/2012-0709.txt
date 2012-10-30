@@ -1,0 +1,85 @@
+-----------------------------------------------------------------------------
+07/09
+
+■CloudStack 3.0.3 on CentOS 6.2 (KVM)
+* Creating system VMs (this may take a while) で止まる。
+- コンピューティングノード側で libvirtd 再起動、cloud-agent 再起動で進む。
+* システムVM(Console Proxy VM と Secondary Storage VM)が Starting のまま。 
+- cloud-agent 停止 → virsh で両システムVM を shutdown → libvirtd 再起動 →
+  cloud-agent 起動で進む。
+* ブログ作成
+
+-----------------------------------------------------------------------------
+07/10
+
+■knife-cloudstack
+* 一通りコマンドを試す。
+* server create が動かない。
+- CloudStack 3 では動作しない？
+- https://github.com/CloudStack/knife-cloudstack/issues/1
+* ブログ作成
+
+■Scalr 3.5
+* 最新版のインストール
+- 最新版は scalr-3.5.r7704.tar.gz
+- Scalr 2.5 同様、Ubuntu 11.10 (PHP 5.3) にインストールしてみる。
+- scalr-3.5.r7704.tar.gz には含まれているSQLファイルにミスがあるので
+  github から差分を取ってこないといけない。
+* ブログ作成
+
+■KDDI
+* Windowsテンプレート
+- http://eventid.net/
+
+-----------------------------------------------------------------------------
+07/11
+
+■CloudStack
+* インスタンスが通信できない
+- ブロードバンドルータの DHCP が干渉しているせい？
+- ひとまず、ブロードバンドルータ、電源タップ、LANケーブルを購入。
+
+■Chef
+* Recipesの勉強
+- "run_list": [ "recipe[ etc_hosts ]" ] はダメ。
+  "run_list": [ "recipe[etc_hosts]" ]   としてスペースは詰める。
+- ひとまず /etc/hosts を置き換えるレシピを作成。
+
+-----------------------------------------------------------------------------
+07/12
+
+■Chef
+* CentOS 6.3 に chef (chef クライアント、chef-solo 含む) のインストール
+- http://wiki.opscode.com/display/chef/Installing+Chef+Client+on+CentOS
+* Recipesの勉強
+- CloudStack インストール用レシピは作れないか。
+- manager のほうは作成。
+
+-----------------------------------------------------------------------------
+07/13
+
+■Chef
+* Recipesの勉強
+- CloudStack manager (storage 含む) インストール用レシピ作成。
+- CloudStack host インストール用レシピ作成。
+
+■jmateland.com
+* CloudStack調査
+- ホストからノードの接続が拒否されている。
+- 構成が複雑だし XenServer なのでわからない。
+
+■KDDI
+* Linuxテンプレート
+- agent-boot.sh が間違っていたらしいので入れ替え予定。
+- テンプレートを作成する際の注意事項をまとめ。
+  https://docs.google.com/a/creationline.com/file/d/0B4MqBU0Rd88IX1B2QjRRTTVoSjg/edit
+- テンプレチェックを自動化(というかコマンドを並べただけ)
+  http://219.117.239.180/install/template-check.sh
+* テンプレート更新 (agent-boot.sh 置き換え)
+- RedHat6.2(64bit)100GB ver5
+- RedHat6.2(64bit)100GB SEP ver2
+* テンプレート更新 (/etc/fstab に swap 追加)
+- RedHat6.2(64bit)100GB ver6
+- RedHat6.2(64bit)100GB SEP ver3
+
+-----------------------------------------------------------------------------

@@ -1,0 +1,105 @@
+-----------------------------------------------------------------------------
+07/23
+
+■jmateland.com
+* CloudStack ホスト追加問題
+- もう少し先方にネットワークの設定などの見直しをしてほしい
+
+■enStratus
+* ドキュメントの確認
+- http://enstratus.creationline.com/
+- リンクミスの指摘 → 修正された。
+* オンプレミス版の取得
+- 取得方法が書いてない？ enStratusに問い合わせ。
+
+-----------------------------------------------------------------------------
+07/24
+
+■CloudStack
+* 3.0.4
+- ダウンロード。
+- http://download.cloud.com/releases/3.0.4/CloudStack-3.0.4-1-rhel6.2.tar.gz
+- http://support.citrix.com/product/cs/v3.0/doc/
+- 3.0.3 の方法から特に変更せずにインストール自体はできそう。
+* 基本設定テスト
++ 名前: TestZone
+  - DNS1: 192.168.24.1
+  - 内部DNS1: 192.168.24.1
++ 名前: TestPod
+  - ゲートウェイ: 192.168.25.1
+  - ネットマスク: 255.255.255.0
+  - IPアドレスの範囲: 192.168.25.120 - 192.168.25.139
++ ゲートウェイ: 192.168.25.1
+  - ネットマスク: 255.255.255.0
+  - IPアドレスの範囲: 192.168.25.160 - 192.168.25.179
++ ハイパーバイザー: KVM
+  - 名前: TestCluster
++ ホスト名: 192.168.25.111
+  - ユーザー名: root
+  - パスワード: cshost2012
++ 名前: TestStorage
+  - プロトコル: NFS
+  - サーバー: 192.168.25.110
+  - パス: /export/primary
++ サーバー: 192.168.25.110
+  - パス: /export/secondary
+
+■Chef
+* Recipesの勉強
+- cloudstack-quickinstall
+- cloudstack 3.0.3 を cloudstack 3.0.4 に改良。
+* github に公開。
+- https://github.com/dai-vdr/cloudstack-quickinstall
+- 動くようだ。
+
+-----------------------------------------------------------------------------
+07/25
+
+■enStratus
+* オンプレミス版の取得
+- Chef でインストールできるらしい。方法確認中。
+
+■JAIST
+* SSL設定
+- 完了。
+* MySQLバックアップ
+- 仕様の確認。
+- スクリプト作成。
+- 設置。
+
+-----------------------------------------------------------------------------
+07/26
+
+■portal1.cs1.creationline.com
+* メールサーバ構築
+- postfix + cyrus-sasl (SMTP AUTH)
+- dovecot
+
+■Chef
+* Recipesの勉強
+- scalr-install (途中)
+- opscode-cookbooks/mysql がうまく動かない (ubuntu 11.10)
+- opscode-cookbooks/apache2 だと /etc/apache2/sites-available/default の
+  AllowOverride が None 固定。
+- opscode-cookbooks/php で pecl_http をインストールすると
+  /etc/php5/conf.d/pecl_http.ini の中身がカラになる。
+
+-----------------------------------------------------------------------------
+07/27
+
+■KDDI
+* ckktky4-pbhpv038 再起動問題
+- iSCSI が切れて、ログが正常に取れていない。
+- ログが消失したため、再起動した原因はわからない。
+
+■Chef
+* Recipesの勉強
+- scalr-install (途中)
+- opscode-cookbooks/mysql がうまく動かないので、ubuntu 12.04 TLS で試す。
+- 今度は http://tickets.opscode.com/browse/COOK-1443 でうまく動かない。
+- https://github.com/opscode-cookbooks/mysql/pull/17 を当てれば OK。
+  https://github.com/cjoudrey/mysql/commit/ca28a454b639b612cc60ec784175722de9b2add4.diff
+- MySQL 5.5 は Scalr 3.5 だと動作しない？
+  ならばやっぱり ubuntu 11.10 で mysql レシピを動くようにしないと駄目。
+
+-----------------------------------------------------------------------------

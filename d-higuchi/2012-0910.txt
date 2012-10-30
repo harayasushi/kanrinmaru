@@ -1,0 +1,116 @@
+-----------------------------------------------------------------------------
+09/10
+
+■enstratus
+* インストールテスト
+- CentOS 6.3 で新レシピの確認 → インストール成功。SELinux disabled が必要。
+
+■219.117.239.178
+* enstratus インストール
+- qpid-cpp-server (AMQP デーモン) をアンインストールしておく必要がある。
+  http://comments.gmane.org/gmane.comp.networking.rabbitmq.general/15599
+- インストール成功。ただし iptables はそのまま。
+
+-----------------------------------------------------------------------------
+09/11
+
+■219.117.239.178
+* enstratus インストール
+- iptables はそのままで ssh でポート転送しないと使えないように。
+- ただし、ホスト名とポート番号はインストール時に指定したものでないと動かない。
+
+■192.168.10.201
+* XenServer 5 で CloudStack 3 用の CentOS 6 インストール
+- XenServer 5 には CentOS 6 のテンプレートがなかった。
+
+■NTT.com knife-cloudstack トレーニング
+* プレゼン資料
+- 査読と修正
+
+-----------------------------------------------------------------------------
+09/12
+
+■CloudStack 3.0.x
+* アドバンスドインストール
+- 拡張ゾーン
+* ゾーン
+- TestZone
+- 192.168.25.1
+- ---
+- 192.168.25.1
+- ---
+- KVM
+- example.jp
+- 10.1.1.0/24 (ゲストCIDR: デフォルト)
+- v (パブリック: デフォルト)
+* 物理ネットワーク
+- VLAN (Isolation method)
+* パブリックトラフィック
+- 192.168.25.1
+- 255.255.255.0
+- --- (VLAN)
+- 192.168.25.120 - 192.168.25.139
+* ポッド
+- TestPod
+- 192.168.25.1
+- 255.255.255.0
+- 192.168.25.140 - 192.168.25.159
+* ゲストトラフィック
+- --- - --- (VLANの範囲)
+* クラスター
+- KVM
+- TestCluster
+* ホスト
+- 192.168.25.111
+- root
+- centos
+- --- (ホストタグ: デフォルト)
+* プライマリストレージ
+- TestStorage
+- nfs
+- 192.168.25.110
+- /export/primary
+- --- (ストレージタグ: デフォルト)
+* セカンダリストレージ
+- 192.168.25.110
+- /export/secondary
+
+■＠IT第8稿
+* knife-cloudstack
+- おおまかな内容でできたので一旦査読依頼。
+
+-----------------------------------------------------------------------------
+09/13
+
+■Rackspace Private Cloud Software
+* 取得
+- 1.8GB iso
+- 中身は Ubuntu インストーラ iso と RPCS の環境が入っている模様。
+
+■Airframe
+* USBメモリイメージ
+- 中身は pentOS という OpenStack のプラットフォームらしい？
+- http://jp.techcrunch.com/archives/20110926piston-cloud-launches-pentos-an-enterprise-openstack-distribution/
+- http://ventureclef.com/blog2/?p=1473
+
+-----------------------------------------------------------------------------
+09/14
+
+■192.168.10.222 on kanrinmaru04
+* CloudStack 3.0.4 manager インストール
+- ちょっと待ち。
+
+■NTT.com knife-cloudstack トレーニング
+* デモ環境構築
+- CloudStack 2.2.14 on 219.117.239.168
+* ubuntu-12.04.1-server-amd64.iso の追加
+- 成功。
+* ubuntu-12.04.1-server-amd64.iso のインスタンスが作成できない
+- management-server.log に↓が出てた。GUI からはエラー内容がわからない。
+- XenServer 6.0 DOES NOT support Guest OS type Other Ubuntu (64-bit)
+* 仕方ないので ubuntu-10.04.4-server-amd64.iso の追加。
+- 成功。
+* やっぱり ubuntu-10.04.4-server-amd64.iso のインスタンスも生成できない。
+- INVALID_SOURCE, Unable to access a required file in the specified repository: file:///tmp/cdrom-repo-FK7pvj/install.amd/xen/vmlinuz.,
+
+-----------------------------------------------------------------------------

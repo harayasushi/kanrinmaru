@@ -1,0 +1,105 @@
+-----------------------------------------------------------------------------
+10/15
+
+■Private Chef Server
+* インストール
+- CentOS 6.3 にインストール (Standalone 編)
+- 途中でエラーが出るけど無視して大丈夫？
+- http://private-chef-docs.opscode.com/installation/prereqs.html
+  ↑をチェックしてなかったかも。
+* 219.117.239.177 (kanrinmaru01) にインストール
+- 問題なく成功。
+
+■219.117.239.177 (kanrinmaru01)
+* セキュリティ設定
+- fail2ban インストール
+- logwatch インストール
+- /etc/hosts.{allow,deny} の ssh 設定
+- root 宛のメールは kanrinmaru@ に転送
+
+-----------------------------------------------------------------------------
+10/16
+
+■Private Chef Server
+* fail2ban, logwatch,  /etc/hosts.{allow,deny} の設定, /etc/aliases の設定
+- 219.117.239.177 (kanrinmaru01 / Private Chef Server)
+- 219.117.239.178 (kanrinmaru02 / enStratus)
+- 219.117.239.179 (kanrinmaru03 / scalr)
+- 219.117.239.190 (kanrinmaru07 / NC CloudStack デモ仮想環境)
+
+■OSS Chef Server
+* fail2ban, logwatch,  /etc/hosts.{allow,deny} の設定, /etc/aliases の設定
+- 219.117.239.170 (chef.akb / OSS Chef Server)
+
+-----------------------------------------------------------------------------
+10/17
+
+■219.117.239.190 (kanrinmaru07 / NC CloudStack)
+* メール転送設定
+- exim4 から postfix (Satellite) に切り替え。
+
+■219.117.239.177 (kanrinmaru01 / Private Chef Server)
+* nginx (80/tcp, 443/tcp) アクセス制限
+- /var/opt/opscode/nginx/etc/nginx.conf
+- allow 127.0.0.1;
+- allow 219.117.239.160/27;
+- allow 192.168.0.0/16;
+- allow 115.177.128.0/17; # *.tyma.nt.ftth4.ppp.infoweb.ne.jp ?
+- deny all;
+- ホスト名は書けない。 http://wiki.nginx.org/HttpAccessModule
+
+■219.117.239.178 (kanrinmaru02 / enStratus)
+* beam.smp (80/tcp), tomcat (443/tcp) アクセス制限
+- そもそも iptables で 22/tcp しか開けてないので現時点では対策不要。
+
+■219.117.239.179 (kanrinmaru03 / scalr)
+* アクセス制限
+- そもそも iptables で 22/tcp しか開けてないので現時点では対策不要。
+
+■219.117.239.190 (kanrinmaru07 / NC CloudStack デモ仮想環境)
+* アクセス制限
+- そもそも iptables で 22/tcp しか開けてないので現時点では対策不要。
+
+■＠IT第8稿
+* knife-cloudstack
+- 原稿の確認。
+
+-----------------------------------------------------------------------------
+10/18
+
+■scalr.jp
+* 和訳確認
+- http://scalr.jp/
+- http://scalr.jp/tour/
+- http://scalr.jp/tour/luncheservers/
+- http://scalr.jp/tour/autoscaling/
+- http://scalr.jp/tour/configtemplates/
+- http://scalr.jp/features/
+
+■219.117.239.177 (kanrinmaru01 / Private Chef Server)
+* バックアップ
+- 追加 HDD に rsync でフルバックアップ設定。cron.daily で実行。
+
+■219.117.239.177 (kanrinmaru01 / Private Chef Server)
+■219.117.239.178 (kanrinmaru02 / enStratus)
+■219.117.239.179 (kanrinmaru03 / scalr)
+* メールドメインの設定
+- /etc/postfix/main.cf myhostname これでよかったかな？
+
+■NC研修
+* CloudStack 環境構築支援
+- 質問に回答。
+
+-----------------------------------------------------------------------------
+10/19
+
+■219.117.239.170 (chef.akb / OSS Chef Server)
+■219.117.239.177 (kanrinmaru01 / Private Chef Server)
+■219.117.239.178 (kanrinmaru02 / enStratus)
+■219.117.239.179 (kanrinmaru03 / scalr)
+■219.117.239.190 (kanrinmaru07 / NC CloudStack デモ仮想環境)
+* メールドメインの設定
+- Chef レシピ postfix で実施。run_list に recipe[postfix] を追加するだけでOK。
+  localhost だけで待ち受けして、メールドメインは適切に設定される単純な MTA。
+
+-----------------------------------------------------------------------------

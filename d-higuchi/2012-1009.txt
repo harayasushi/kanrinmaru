@@ -1,0 +1,96 @@
+-----------------------------------------------------------------------------
+10/09
+
+■
+* CloudStack on nested KVM
+- 完成。
+- 査読依頼。
+
+■Scalr調査資料
+* IDCF提出用
+- 完成。
+
+■knife-cloudstack-fog
+* 参考資料
+- http://www.idcf.jp/blog/cloud/chef_02/
+- http://www.slideshare.net/tafujish/hbstudy37
+- https://github.com/anikundesu/knife-cloudstack-fog
+
+■CloudStack 2
+* 外部 NFS を利用
+- zone1
+  + 192.168.122.1
+  + ---
+  + 192.168.122.1
+  + ---
+  + 100 - 200 (VLAN ID範囲)
+  + 10.1.1.0/24
+  + はい
+- pod1
+  + 192.168.122.1
+  + 255.255.255.0
+  + 192.168.122.101 - 192.168.122.120
+- untagged
+  + zone-wide
+  + 192.168.122.1
+  + 255.255.255.0
+  + 192.168.122.131 - 192.168.122.150
+- cluster1
+  + kvm
+  + zone1
+  + pod1
+- cs-host.example.jp
+  + root
+  + centos
+  + ---
+- ps1
+  + cluster1
+  + NFS
+  + 192.168.122.1
+  + /var/local/nfs/cs2-adv/primary
+  + ---
+- ss1
+  + 192.168.122.1
+  + /var/local/nfs/cs2-adv/secondary
+
+-----------------------------------------------------------------------------
+10/10
+
+■knife-cloudstack-fog
+* インストール
+- http://www.idcf.jp/blog/cloud/chef_02/ を参考に。
+* chef-server 準備
+- 192.168.122.199
+- http://192.168.122.199:4000
+- AMQP: chef
+- webUI: chef
+
+-----------------------------------------------------------------------------
+10/11
+
+■knife-cloudstack-fog
+* ブートストラップスクリプト
+- centos5-gems, centos6, rvm-gems(?) しかないのでテンプレート作成時は注意。
+* SSH key pair によるインスタンスへのログイン
+- http://www.cloudstack.org/forum/10-developer-and-api-support/7399-how-can-i-log-into-the-virtual-machine-with-the-sshkeypair.html
+- http://chriskleban-internet.blogspot.jp/2012/03/build-cloud-cloudstack-instance.html
+- 仮想ルータがデータをくれないのでうまく動いてない。
+- sshログインする際のIPアドレスをうまく扱えない？
+
+■Private Chef
+* インストールドキュメント
+- 内容の確認。
+
+-----------------------------------------------------------------------------
+10/12
+
+■Private Chef
+* インストール
+- CentOS 6.3 にインストール (Standalone 編)
+- 途中でエラーが出るけど無視して大丈夫？
+
+■CloudStack
+* Linux-KVMをVMware Fusionで動かそう！
+- http://d.hatena.ne.jp/m-bird/20120404/1333538816
+
+-----------------------------------------------------------------------------

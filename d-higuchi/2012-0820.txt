@@ -1,0 +1,81 @@
+-----------------------------------------------------------------------------
+08/20
+
+■enStratus Chef-installer
+* ubuntu 12.04 → インストール失敗
+- libmysqlclient16-dev がない
+- service[mysql] が動作しない
+* ubuntu 10.04 → インストール成功
+- /etc/sudoers が置き換えられてしまって root 権限を得られなくなる。
+
+■enStratus Chef-installer
+* 新しいインストーラ(CentOS / RHEL 対応)
+- CentOS 6.3 (x86_64) にインストール → mysql gem インストールで失敗。
+  単に gcc と make が入ってないだけなので要やりなおし。
+- CentOS 5.8 (x86_64) にインストール → chef-solo 実行中に失敗。
+  + openssl パッケージ指定が CentOS 6 決め打ちなので 5 でも通るように修正。
+  + wget パッケージが入っている前提だったので入れるように修正。
+  + パッチ送付。
+
+-----------------------------------------------------------------------------
+08/21
+
+■CloudStack 2.2.14
+* VM が壊れてしまったので再インストール
+- インストール完了後の VM をバックアップした。
+
+■CloudStack 2.2.14 + knife-cloudstack 0.0.12
+* 再テスト
+- やっぱりだめなのでログを送った。
+Waiting for server/var/lib/gems/1.8/gems/knife-cloudstack-0.0.12/lib/knife-cloudstack/connection.rb:157:in `create_server': undefined method `[]' for nil:NilClass (NoMethodError)
+
+■enStratus Chef-installer
+* 新しいインストーラ(CentOS / RHEL 対応)
+- 前回報告したバグは直っていた。
+- CentOS 6.3 で /etc/init.d/mysql では動作しないバグを報告。
+- 必要な変数指定が欠けてるバグを報告。
+
+-----------------------------------------------------------------------------
+08/22
+
+■CloudStack 2.2.14
+* System VM が起動しなくなることがある(= qemu-kvm が CPU 100%)
+- https://wiki.edubuntu.org/VirtFeatureVerification
+- /usr/libexec/qemu-kvm に -enable-nesting をつけて起動すればよい？
+
+■CloudStack 2.2.14 + knife-cloudstack 0.0.12
+* 再テスト
+- Basic Network だと使えない。
+- default_network を取得するときに isSystem=true をつければよい。
+
+■enStratus Chef-installer
+* 前回のインストーラ
+- Ubuntu 12.04 で、修正の必要なく動作を確認。
+- いちいち必要な変数指定をしないでいいように修正を希望。
+
+-----------------------------------------------------------------------------
+08/23
+
+■CloudStack 2.2.14 + knife-cloudstack 0.0.12
+* 再々テスト
+
+-----------------------------------------------------------------------------
+08/24
+
+■chef-server
+* CentOS 6.3 にインストール
+- http://wiki.opscode.com/display/chef/Installing+Chef+Client+on+CentOS
+- http://wiki.opscode.com/display/chef/Installing+Chef+Server+using+Chef+Solo
+- まず手動で chef-solo を入れ、そこから chef-server を入れる。
+- Init スタイルの起動スクリプトを使う。
+- epel-release が 6-5 から 6-7 になっているので json を上書きする。
+
+■chef private
+* ドキュメント
+- https://github.com/opscode/private-chef-administration
+
+■咸臨丸
+* サーバ設定
+- 一般ユーザの作成, root パスワード変更, root ssh の禁止
+
+-----------------------------------------------------------------------------

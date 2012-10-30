@@ -1,0 +1,106 @@
+-----------------------------------------------------------------------------
+07/30
+
+■Chef
+* Recipesの勉強
+- ubuntu server 11.10 で mysql レシピを動かすには。
+- AppArmor がらみ？ → AppArmor を削除しても変わらない。
+- http://tickets.opscode.com/browse/COOK-1509  に報告。
+
+-----------------------------------------------------------------------------
+07/31
+
+■Chef
+* Recipesの勉強
+- ubuntu server 11.10 で mysql レシピを動かすには。
+- init: post-start can cause respawn to hang
+  https://bugs.launchpad.net/ubuntu/oneiric/+source/mysql-5.1/+bug/711635
+- innodb_adaptive_flushing を設定しない。
+- 完成。github に push。
+  https://github.com/dai-vdr/scalr-install
+
+-----------------------------------------------------------------------------
+08/01
+
+■scalr + cloudstack 連携
+* 再挑戦
+- http://192.168.24.10:8080/client/api
+  API キー 0wQP22GUHiHMtVg-rrX66qLUTB5lH3g_wgvDh3iAk1umLoQlc2aUNvhgmHb5bSTGttELPLhDrerzdVvYuX2e8g
+  秘密キー LpZ1_3a2KcwCX5OXskGry9QdtLH2nY3iWgDnNrLOZlKUeXXhWcPCCop5UfRCArPPwmMOp1C9tALCSSx5O0-sdQ
+- scalr http://192.168.122.105/
+  USER: cf@example.jp
+  PASS: cfuser
+* CloudStack 上に Ubuntu 12.04 LTS を作成。
+- scalarizr をインストール。しかし半年前の問題は1つも解消してない。
+
+-----------------------------------------------------------------------------
+08/02
+
+■scalr
+* CloudStack 連携がうまくいかない
+- https://groups.google.com/forum/#!topic/scalr-discuss に問い合わせした。
+
+■CloudStack
+* user-data 入力欄は GUI にはない？
+  http://bugs.cloudstack.org/browse/CS-7837
+  http://bugs.cloudstack.org/browse/CS-14538
+  http://bugs.cloudstack.org/browse/CS-15310
+* user-data の確認方法
+- http://bugs.cloudstack.org/browse/CS-12992 にあり。
+  use cloud; -> select * from user_vm;
+* user-data を更新しても仮想ルータに降りてこないバグ
+- Updated userdata doesn't propagate to software router
+  http://bugs.cloudstack.org/browse/CS-12992
+  2.2.14 で修正、以前 scalarizr を試したときダメだったのはこれが原因？
+- CLONE - Updated userdata doesn't propagate to software router
+  http://bugs.cloudstack.org/browse/CS-15462
+  3.x でも発生していて、未修正であることを確認した。
+  仮想ルータを再起動したら、user-data は更新される。
+
+■portal1.cs1.creationline.com
+* メールサーバ構築
+- SMTP AUTH がうまく動いてなかったので修正。
+
+-----------------------------------------------------------------------------
+08/03
+
+■CloudStack 2.2.14
+* 基本設定テスト
++ 名前: TestZone
+  - DNS1: 192.168.122.1
+  - 内部DNS1: 192.168.122.1
++ 名前: TestPod
+  - ゲートウェイ: 192.168.122.1
+  - ネットマスク: 255.255.255.0
+  - IPアドレスの範囲: 192.168.122.220 - 192.168.122.229
++ ゲートウェイ: 192.168.122.1
+  - ネットマスク: 255.255.255.0
+  - IPアドレスの範囲: 192.168.122.230 - 192.168.122.239
++ ハイパーバイザー: KVM
+  - 名前: TestCluster
++ ホスト名: 192.168.122.46
+  - ユーザー名: root
+  - パスワード: cshost2012
++ 名前: TestStorage
+  - プロトコル: NFS
+  - サーバー: 192.168.122.163
+  - パス: /export/primary
++ サーバー: 192.168.122.163
+  - パス: /export/secondary
+
+■chef
+* cloudstack-quickinstall
+- 2.2.x に対応するように修正。
+- github に push 済。
+
+■nested KVM
+* KVM 上で KVM を動かす。
+- ホストの kernel が 3.3 以上なら可能。
+
+■CloudStack
+* user-data を更新しても仮想ルータに降りてこないバグ
+- Updated userdata doesn't propagate to software router
+  http://bugs.cloudstack.org/browse/CS-12992
+  2.2.14 で修正されてるか確認 → 修正されていることを確認した。
+
+-----------------------------------------------------------------------------

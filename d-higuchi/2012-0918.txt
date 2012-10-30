@@ -1,0 +1,61 @@
+-----------------------------------------------------------------------------
+09/18
+
+■219.117.239.170
+* Chef Server
+- 設定確認。
+* Cookbooks
+- cloudstack-quickinstall を登録。
+
+■219.117.239.177 / 178 / 179
+* Chef Client
+- Chef Server (219.117.239.170) へ登録。
+
+■Zabbix
+* Chef Cookbooks
+- https://github.com/laradji/zabbix
+- server_source でインストールできたけど、JSONファイルの準備がかなり面倒。
+* 参考サイト
+- http://www.zabbix.com/jp/
+- http://www.zabbix.jp/
+- http://www.atmarkit.co.jp/flinux/index/indexfiles/zabbixindex.html
+
+-----------------------------------------------------------------------------
+09/19
+
+■Zabbix
+* Chef Cookbooks つづき
+- agent_prebuild はパスが /usr/local 決め打ちできちんと動かない？
+- agent_source ならOK。
+- ただし、/etc/zabbix/zabbix_agentd.conf ではなく、
+  /opt/zabbix/etc/zabbix_agentd.conf を見ているので注意。
+* Zabbix と CloudStack の連携
+- http://www.citrix.co.jp/event/pdf/Uniadex_20120720.pdf
+
+-----------------------------------------------------------------------------
+09/20
+
+■NTT.com knife-cloudstack トレーニング
+* アジェンダ
+- 少し具体的な内容を記載。
+
+■＠IT第8稿
+* knife-cloudstack
+- 〆切。とりあえず査読はOK。
+
+-----------------------------------------------------------------------------
+09/21
+
+■SugarCRM
+* chefインストール
+- http://whatan00b.com/sugarcrm-chef-cookbook-published
+- http://community.opscode.com/cookbooks/sugarcrm
+- 顧客管理システムなのでチケット管理には使えないと思う。
+
+■enstratus
+* CentOS 6.3 インストール
+- うまくいかないのでバグレポート。
+* Ubuntu 12.04 インストール
+- sudoers 問題は解消していた。
+
+-----------------------------------------------------------------------------

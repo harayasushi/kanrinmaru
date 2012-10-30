@@ -1,0 +1,140 @@
+-----------------------------------------------------------------------------
+08/27
+
+■CloudStack 2.2.14
+* アドバンスモード VLAN
+ - TestZone
+  + 192.168.122.1
+  + ---
+  + 192.168.122.1
+  + ---
+  + (ゲストネットワークに割り当てられる)VLAN ID範囲: 10 - 100
+  + (ゲスト仮想ネットワークで使用される)Guest CIDR: 10.1.1.0/24
+  + はい
+ - TestPod
+  + TestPod
+  + 192.168.122.1
+  + 255.255.255.0
+  + 192.168.122.201 - 192.168.122.210
+ - (パブリックネットワークの)IPアドレス範囲追加
+  + untagged
+  + zone-wide
+  + 192.168.122.1
+  + 255.255.255.0
+  + 192.168.122.211 - 192.168.122.230
+ - TestCluster
+  + KVM
+  + TestZone
+  + TestPod
+ - 192.168.122.191
+ - TestStorage
+  + TestCluster
+  + 192.168.122.190
+  + /export/primary
+ - セカンダリ
+  + 192.168.122.190
+  + /export/secondary
+* システム停止時の注意
+- 手動でシステムVMを停止してから全体を終了させないとVMが破損するかも。
+* 手動で仮想ルータを削除するには
+- Web GUI には仮想ルータを削除するメニューがないので、API から削除する。
+- http://docs.cloudstack.org/Knowledge_Base/How_to_manually_delete_a_router
+
+■CloudStack 2.2.14 + knife-cloudstack 0.0.12
+* アドバンスモード VLAN でテスト
+- knife-cloudstack に workaround を加えなくても動作した。
+
+-----------------------------------------------------------------------------
+08/28
+
+■CloudStack 2.2.14 + knife-cloudstack 0.0.12
+* アドバンスモード VLAN でテスト つづき
+- アドバンスモードだと --no-public-ip は不要。
+  これをつけると内部IPアドレス(private)が出てしまうので。
+
+knife cs server create knife-0828-2 \
+-S 'Medium Instance' \
+-T 'ubuntu 12.04' \
+-U 'http://192.168.122.190:8080/client/api' \
+-d 'ubuntu12.04-gems' \
+-r 'recipe[apache2]' \
+-P 'ubuntu' \                   
+-x 'ubuntu' \                
+-VV 2>&1 | tee knife.log
+
+■北大学術クラウド
+* 使い方
+- 情報基盤センターポータル ( https://igate.hucc.hokudai.ac.jp/portal.php )
+- 大型計算機システム利用
+- クラウドサービス
+* プロジェクトサーバ申請
+ + Sサーバ
+ + 標準パッケージ
+ + 1台
+ + 公開鍵認証方式(自動生成)
+ + 秘密鍵のパスフレーズ **********
+ + SSH
+ + rootパスワード **********
+* 講習会資料
+- http://www.hucc.hokudai.ac.jp/~a10019/kosyu/kosyu90.html
+- CL-1 北海道大学アカデミッククラウドの紹介
+- CL-2 クラウドシステム利用講習会
+- CL-5 プロジェクトサーバ利用編
+* 133.50.172.45
+- yum update で CentOS 5.5 から 5.8 にアップデート。
+- chef-solo インストール
+  http://wiki.opscode.com/display/chef/Installing+Chef+Client+on+CentOS
+- chef-server インストール
+  http://wiki.opscode.com/display/chef/Installing+Chef+Server+using+Chef+Solo
+  やっぱり一緒に入ってる /usr/local/ruby/bin/ruby が邪魔して失敗した。
+* ISOのアップロード
+- CloudStack からは直接 ISO を追加できないので、
+  オンラインストレージ https://silo1.hucc.hokudai.ac.jp/ を利用する。
+* プロジェクトサーバ申請
+ + Sサーバ
+ + 個人テンプレート CentOS-6.3-x86_64-netinstall.iso
+ + 1台
+ + 公開鍵認証方式(自動生成)
+ + 秘密鍵のパスフレーズ **********
+ + SSH
+ + rootパスワード ***********
+* 133.50.170.189
+- chef-server インストール前に lokkit --selinux=disabled して SELinux 無効に。
+- chef-solo インストール
+  http://wiki.opscode.com/display/chef/Installing+Chef+Client+on+CentOS
+- chef-server インストール
+  http://wiki.opscode.com/display/chef/Installing+Chef+Server+using+Chef+Solo
+  インストール成功。
+
+-----------------------------------------------------------------------------
+08/29
+
+■219.117.239.178
+* LVM オンラインリサイズ
+- リサイズ後に reboot したら、起動してこなくなった → 原因不明。再インストール。
+
+■219.117.239.177, 178, 179
+* 初期設定
+- 一般ユーザの作成
+- rootパスワードの変更
+- rootでsshログインの禁止
+- SELinux の無効化 (lokkit --selinux disabled)
+- 時刻合わせ
+- chef-solo (client) のインストール。
+
+-----------------------------------------------------------------------------
+08/30
+
+■Chefパンフ
+* 査読
+
+■192.168.10.201
+* XenServer (CloudStack 3 Managemenr + NFS + DNS 用？)
+- XenCenter は Windows 用でフォワードとかよくわからないので CLI で。
+- でもうまくいかない。
+
+■192.168.10.202
+* XenServer (CloudStack 3 Computing Node 用)
+- 特に作業は必要ないのかな...。
+
+-----------------------------------------------------------------------------
