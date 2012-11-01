@@ -80,3 +80,37 @@
                       25分で完了。これじゃ同時起動は無理。
 
 -----------------------------------------------------------------------------
+11/01
+
+■scalr.jp
+* 和訳確認
+- 前回の指摘事項が反映されていないので催促。
+
+■NC研修
+* CloudStack 環境構築支援
+- CentOS 5.x に対して -d centos5-gems でブートストラップすると
+  chef-client が正常動作しない( Cipher is not a module (TypeError) )
+- http://tickets.opscode.com/browse/CHEF-2906
+- -d chef-full で Omnibus installer を使えば OK。
+  しかし、時間がずれていて正常に動作しない。どこがずれているのか？→確認中
+- CentOS 6.x は -d centos6-gems はないので、-d chef-full を使えば OK。
+  しかし、途中で止まってしまう。wget か curl が存在しないのでは？→確認中
+
+■219.117.239.188 (kanrinmaru05)
+* 初期設定
+- Chef Private Server に登録。
+- chef-client::delete_validation, fail2ban, logwatch, postfix レシピの追加。
+- virt-manger, tightvncserver のインストール。
+
+■Jenkins
+* メモ
+- http://www.slideshare.net/tohakushi/ssmjp-20120628-13484345
+- http://blog.gigei.jp/tech/000053.html
+- http://d.hatena.ne.jp/kaorun55/20120327/1332868192
+- http://d.hatena.ne.jp/tk0miya/20111212/p2
+
+■aspell
+* メモ
+- cat build/html/index.html | aspell -d en -H list | sort -f | uniq
+
+-----------------------------------------------------------------------------
