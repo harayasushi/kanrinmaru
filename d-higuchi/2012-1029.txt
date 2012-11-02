@@ -122,6 +122,8 @@
   また、SELinux が Enforcing になっているので、Permissive にするレシピが必要。
   さらに、iptables で 80/tcp が閉じてるので、空けないといけない。
   selinux::permissive はあるけど、iptables はうまいレシピがないので要自作。
+- https://github.com/cl-lab-k/lokkit
+  lokkit -q --enable -p http:tcp を実行するだけのレシピを作成。
 - CentOS 6.x が -d chef-full で止まってしまう。
   どこかから取ってきた OpenStack イメージで root ログインができないから。
   こちらは不採用。
