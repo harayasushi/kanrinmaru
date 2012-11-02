@@ -120,8 +120,11 @@
 * CloudStack 環境構築支援
 - CentOS 5.x に -d chef-full したが正常に動作しない。時間がずれてた。
   また、SELinux が Enforcing になっているので、Permissive にするレシピが必要。
+  さらに、iptables で 80/tcp が閉じてるので、空けないといけない。
+  selinux::permissive はあるけど、iptables はうまいレシピがないので要自作。
 - CentOS 6.x が -d chef-full で止まってしまう。
   どこかから取ってきた OpenStack イメージで root ログインができないから。
+  こちらは不採用。
 
 ■219.117.239.188 (sandbox)
 * LVM 設定
