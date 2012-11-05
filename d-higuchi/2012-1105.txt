@@ -1,0 +1,27 @@
+-----------------------------------------------------------------------------
+11/05
+
+■scalr.jp
+* 和訳確認
+- 「い」抜けを修正。
+- 改行とエンコーディングの統一。
+
+■NC研修
+* CloudStack 環境構築支援
+- ようやく knife-cloudstack がまともにインスタンスを作ってくれた。
+
+■219.117.239.188 (sandbox)
+* jenkins-master の sphinx ディレクトリに接続するための apache2 の設定
+- /etc/apache2/sites-available/jenkins-master-sphinx でリバースプロキシ設定。
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* sphinx との連携
+- sphinx はインストールするだけ。
+* bitbucket.org との連携
+- jenkins ユーザで空パスフレースの ssh キーペアを作成して bitbucket.org に登録。
+- Jenkins Git Plugin をインストールする。
+- レポジトリ ssh://git@bitbucket.org/j_hotta/chef-training-p.git 指定に注意。
+- j_hotta/kanrinmaru.git の server-manage も sphinx 管理下に置いた。
+  
+
+-----------------------------------------------------------------------------
