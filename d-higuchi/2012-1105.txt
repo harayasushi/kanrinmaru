@@ -23,5 +23,19 @@
 - レポジトリ ssh://git@bitbucket.org/j_hotta/chef-training-p.git 指定に注意。
 - j_hotta/kanrinmaru.git の server-manage も sphinx 管理下に置いた。
   
+-----------------------------------------------------------------------------
+11/06
+
+■NPCデモ
+* nginx + WordPress/apache2 + MySQL master/slave
+- 作成開始。
+- 各ノードの情報共有は Data Bag を使う。
+  http://wiki.opscode.com/display/chef/Data+Bags
+  knife data bag create all-in-one-wp
+  knife data bag from file all-in-one-wp mysql.json
+- レシピ内で data_bag のデータを取ってくるには
+  mysql = data_bag_item( 'all-in-one-wp', 'mysql' )
+- テンプレートに data_bag のデータを埋め込むには
+  variables( { key => val } )
 
 -----------------------------------------------------------------------------
