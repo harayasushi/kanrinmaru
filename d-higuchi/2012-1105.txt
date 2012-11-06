@@ -26,8 +26,8 @@
 -----------------------------------------------------------------------------
 11/06
 
-■NPCデモ
-* nginx + WordPress/apache2 + MySQL master/slave
+■NPC chef デモ
+* nginx + WordPress/apache2 + MySQL master/slave + knife-ec2
 - 作成開始。
 - 各ノードの情報共有は Data Bag を使う。
   http://wiki.opscode.com/display/chef/Data+Bags
