@@ -26,6 +26,10 @@
 -----------------------------------------------------------------------------
 11/06
 
+■NC研修
+* CloudStack 環境構築支援
+- 質問に回答。
+
 ■NPC chef デモ
 * nginx + WordPress/apache2 + MySQL master/slave + knife-ec2
 - 作成開始。
@@ -37,5 +41,22 @@
   mysql = data_bag_item( 'all-in-one-wp', 'mysql' )
 - テンプレートに data_bag のデータを埋め込むには
   variables( { key => val } )
+
+-----------------------------------------------------------------------------
+11/07
+
+■NC研修
+* CloudStack 環境構築支援
+- 質問に回答。
+
+■NPC chef デモ
+* nginx + WordPress/apache2 + MySQL master/slave + knife-ec2
+- ひとまず大枠はできてきたので BitBucket.org に push。
+  https://bitbucket.org/d_higuchi/all-in-one-wp
+- MySQL のレプリケーション手順を自動化するのはなかなか骨が折れそう。
+  手でレプリケーションはできたので、これをどう Recipe に落とし込むか要検討。
+- 各ノードの設定が完了したかどうかは Tags を Set/Search して検出する。
+  これによって、一斉に動作させてもある程度の精度で同期できると思う。
+- 一斉に動作させるには Capistrano が有力か？  情報収集中。
 
 -----------------------------------------------------------------------------
