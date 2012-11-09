@@ -57,9 +57,9 @@ NTP の設定
  ntpd           	0:off	1:off	2:on	3:on	4:on	5:on	6:off
  [root@kanrinmaru01 ~]# 
 
-.. note::
+Chef 管理下に移行したら run_list に以下を追加する(2012/11/09)
 
- cookbook 管理が望ましい(TODO: 2012/11/05)
+- recipe[ntp]
 
 mail
 ----

@@ -327,5 +327,12 @@ run_list に以下を追加するだけでOK
 
 - recipe[postfix]
 
+NTP の設定
+----------
+
+run_list に以下を追加するだけでOK
+
+- recipe[ntp]
+
 ..
  [EOF]
