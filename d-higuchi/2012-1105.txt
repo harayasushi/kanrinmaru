@@ -77,3 +77,28 @@
 - http://acrmp.github.com/foodcritic/
 
 -----------------------------------------------------------------------------
+11/09
+
+■scalr.jp
+* 和訳確認
+- s/SCALR/Scalr/g
+
+■NC研修
+* CloudStack 環境構築支援
+- ひとまず完成した模様。11/12 現地で確認予定。
+
+■NPC chef デモ
+* nginx + WordPress/apache2 + MySQL master/slave + knife-ec2
+- EC2 でのテストラン成功。
+
+■219.117.239.177 (kanrinmaru01 / Private Chef Server)
+■219.117.239.178 (kanrinmaru02 / enStratus)
+■219.117.239.179 (kanrinmaru03 / scalr)
+■219.117.239.190 (kanrinmaru07 / NC CloudStack デモ仮想環境)
+■219.117.239.188 (sandbox)
+■192.168.122.11 (jenkins-master.akb-sb)
+* run_list に追加
+- recipe[ntp]
+* bitbucket/kanrinmaru/server-manage/ の更新
+
+-----------------------------------------------------------------------------
