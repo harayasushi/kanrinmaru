@@ -572,5 +572,12 @@ jenkins-master の sphinx ディレクトリに接続するための apache2 の
 
  cookbook 管理が望ましい(TODO: 2012/11/05)
 
+NTP の設定
+----------
+
+run_list に以下を追加するだけでOK
+
+- recipe[ntp]
+
 ..
  [EOF]
