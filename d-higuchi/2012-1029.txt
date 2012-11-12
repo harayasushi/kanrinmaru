@@ -96,7 +96,7 @@
 - CentOS 6.x は -d centos6-gems はないので、-d chef-full を使えば OK。
   しかし、途中で止まってしまう。wget か curl が存在しないのでは？→確認中
 
-■219.117.239.188 (kanrinmaru05)
+■219.117.239.188 (sandbox)
 * 初期設定
 - Chef Private Server に登録。
 - chef-client::delete_validation, fail2ban, logwatch, postfix レシピの追加。
@@ -112,5 +112,39 @@
 ■aspell
 * メモ
 - cat build/html/index.html | aspell -d en -H list | sort -f | uniq
+
+-----------------------------------------------------------------------------
+11/02
+
+■NC研修
+* CloudStack 環境構築支援
+- CentOS 5.x に -d chef-full したが正常に動作しない。時間がずれてた。
+  また、SELinux が Enforcing になっているので、Permissive にするレシピが必要。
+  さらに、iptables で 80/tcp が閉じてるので、空けないといけない。
+  selinux::permissive はあるけど、iptables はうまいレシピがないので要自作。
+- https://github.com/cl-lab-k/lokkit
+  lokkit -q --enable -p http:tcp を実行するだけのレシピを作成。
+- CentOS 6.x が -d chef-full で止まってしまう。
+  どこかから取ってきた OpenStack イメージで root ログインができないから。
+  こちらは不採用。
+
+■219.117.239.188 (sandbox)
+* LVM 設定
+- /dev/sda3 (PV) を /dev/vg_sandbox (VG) にした。
+- /dev/vg_sandbox から LV を切り売りして仮想マシンから利用する。
+* apache2 設定
+- run_list に apache2, apache2::mod_proxy, apache2::mod_proxy_http を追加。
+- /jenkins を http://192.168.122.11:8080/jenkins にリバースプロキシ設定。
+- IPアドレス制限と、Basic認証もかける。
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* OS インストール
+- ubuntu 12.04.1 LTS
+* Private Chef Server への登録
+- いつも通りに行う。
+- run_list に chef-client::delete_validation, logwatch, postfix を追加。
+* jenkins のインストール
+- apt でインストールできる。
+- --prefix=/jenkins をつけてリバースプロキシとパスが異ならないようにする。
 
 -----------------------------------------------------------------------------
