@@ -1,0 +1,20 @@
+11/12 Monday
+
+- Sent LT for Scalr User Group @ Cloudstack User 会
+    >  awaiting review
+- Pushed latest for Scalr.jp to bitbucket
+- Set up Noah Cloud account @ IDCF
+    > credentials: username: Cladmin1234 password: Cladmin123
+- Agreed on 11/30 Scalr Hands On
+
+
+To do list for 11/13
+
+- Perform WordPress on Scalr.jp using Noah Cloud
+- Update LT for CloudStack User Group 11/15
+- Announce 11/30 Hands On on ATND
+- Write brief for users coming to the ScalrJP Hands On
+
+To do list (others)
+- Write presentation for GREE and DeNA
+- Approach Nexon, GREE DeNA and BandaiNamco
