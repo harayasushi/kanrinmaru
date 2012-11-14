@@ -678,6 +678,9 @@ apache のインストール。
  +       ProxyPassReverseCookieDomain    219.117.239.177 127.0.0.1
  +</Location>
  +
+ +# WebUI access
+ +RewriteRule (^/.*$) /chefui$1 [PT,L]
+ +
  +<Location /chefui>
  +       order deny,allow
  +       deny from all
