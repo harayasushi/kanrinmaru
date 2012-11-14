@@ -579,5 +579,51 @@ run_list に以下を追加するだけでOK
 
 - recipe[ntp]
 
+Chef クライアントの設定
+-----------------------
+
+デフォルトでは 443/tcp にアクセスするので変更する。
+
+.. code-block:: console
+
+ root@sandbox:~# chef-client
+ [2012-11-14T16:47:59+09:00] INFO: *** Chef 10.16.2 ***
+        :
+        :
+        :
+ [2012-11-14T16:47:59+09:00] FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
+ [2012-11-14T16:47:59+09:00] FATAL: Net::HTTPServerException: 403 "Forbidden"
+ root@sandbox:~#
+
+/etc/chef/client.rb の chef_server_url のポートを変更する。
+
+.. code-block:: console
+
+ root@sandbox:~# cp -a /etc/chef/client.rb /etc/chef/client.rb.orig
+ root@sandbox:~# vi /etc/chef/client.rb
+ root@sandbox:~# diff -u /etc/chef/client.rb.orig /etc/chef/client.rb
+ --- /etc/chef/client.rb.orig    2012-11-01 19:12:45.000000000 +0900
+ +++ /etc/chef/client.rb 2012-11-14 16:48:37.000000000 +0900
+ @@ -1,5 +1,5 @@
+  log_level              :info
+  log_location           STDOUT
+ -chef_server_url                "https://219.117.239.177/organizations/kanrinmaru"
+ +chef_server_url                "https://219.117.239.177:8443/organizations/kanrinmaru"
+  validation_key         "/etc/chef/kanrinmaru-validator.pem"
+  validation_client_name "kanrinmaru-validator"
+ root@sandbox:~#
+
+アクセスできるようになった。
+
+.. code-block:: console
+
+ root@sandbox:~# chef-client
+ [2012-11-14T16:48:53+09:00] INFO: *** Chef 10.16.2 ***
+ [2012-11-14T16:48:53+09:00] INFO: Run List is [recipe[chef-client::delete_validation], recipe[fail2ban], recipe[logwatch], recipe[postfix], recipe[apache2], recipe[apache2::mod_proxy], recipe[apache2::mod_proxy_http], recipe[ntp]]
+        :
+        :
+        :
+root@sandbox:~#
+
 ..
  [EOF]

@@ -486,5 +486,51 @@ run_list に以下を追加するだけでOK
 
 - recipe[ntp]
 
+Chef クライアントの設定
+-----------------------
+
+デフォルトでは 443/tcp にアクセスするので変更する。
+
+.. code-block:: console
+
+ root@jenkins-master:~# chef-client
+ [2012-11-14T16:55:40+09:00] INFO: *** Chef 10.16.2 ***
+        :
+        :
+        :
+ [2012-11-14T16:55:41+09:00] FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
+ [2012-11-14T16:55:41+09:00] FATAL: Net::HTTPServerException: 403 "Forbidden"
+ root@jenkins-master:~#
+
+/etc/chef/client.rb の chef_server_url のポートを変更する。
+
+.. code-block:: console
+
+ root@jenkins-master:~# cp -a /etc/chef/client.rb /etc/chef/client.rb.orig
+ root@jenkins-master:~# vi /etc/chef/client.rb
+ root@jenkins-master:~# diff -u /etc/chef/client.rb.orig /etc/chef/client.rb
+ --- /etc/chef/client.rb.orig    2012-11-02 15:23:04.471904434 +0900
+ +++ /etc/chef/client.rb 2012-11-14 16:56:14.208414608 +0900
+ @@ -1,5 +1,5 @@
+  log_level              :info
+  log_location           STDOUT
+ -chef_server_url                "https://219.117.239.177/organizations/kanrinmaru"
+ +chef_server_url                "https://219.117.239.177:8443/organizations/kanrinmaru"
+  validation_key         "/etc/chef/kanrinmaru-validator.pem"
+  validation_client_name "kanrinmaru-validator"
+ root@jenkins-master:~#
+
+アクセスできるようになった。
+
+.. code-block:: console
+
+ root@jenkins-master:~# chef-client
+ [2012-11-14T16:56:33+09:00] INFO: *** Chef 10.16.2 ***
+ [2012-11-14T16:56:33+09:00] INFO: Run List is [recipe[chef-client::delete_validation], recipe[logwatch], recipe[postfix], recipe[apache2], recipe[ntp]]
+        :
+        :
+        :
+ root@jenkins-master:~#
+
 ..
  [EOF]

@@ -574,5 +574,251 @@ run_list に以下を追加するだけでOK
 
 - recipe[postfix]
 
+リバースプロキシの設定
+----------------------
+
+apache のインストール。
+細かい調整が必要なので、Opscode Cookbooks からはインストールしない。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# yum install httpd mod_ssl
+        :
+        :
+        :
+ Installed:
+   httpd.x86_64 0:2.2.15-15.el6.centos.1 mod_ssl.x86_64 1:2.2.15-15.el6.centos.1
+
+ Dependency Installed:
+   apr.x86_64 0:1.3.9-5.el6_2
+   apr-util.x86_64 0:1.3.9-3.el6_0.1
+   apr-util-ldap.x86_64 0:1.3.9-3.el6_0.1
+   httpd-tools.x86_64 0:2.2.15-15.el6.centos.1
+
+ Complete!
+ [root@kanrinmaru01 ~]#
+
+80/tcp を止める。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# cp -a /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.2012-1114
+ [root@kanrinmaru01 ~]# vi /etc/httpd/conf/httpd.conf
+ [root@kanrinmaru01 ~]# diff -u /etc/httpd/conf/httpd.conf.2012-1114 /etc/httpd/conf/httpd.conf
+ --- /etc/httpd/conf/httpd.conf.2012-1114        2012-02-07 23:47:02.000000000 +0900
+ +++ /etc/httpd/conf/httpd.conf  2012-11-14 16:16:37.265409044 +0900
+ @@ -133,7 +133,9 @@
+  # prevent Apache from glomming onto all bound IP addresses (0.0.0.0)
+  #
+  #Listen 12.34.56.78:80
+ -Listen 80
+ +# 2012/11/14 d-higuchi stop
+ +#Listen 80
+ +#
+
+  #
+  # Dynamic Shared Object (DSO) Support
+ [root@kanrinmaru01 ~]#
+
+リバースプロキシを 8443/tcp に設定する。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# cp -a /etc/httpd/conf.d/ssl.conf /etc/httpd/conf.d/ssl.conf.2012-1114
+ [root@kanrinmaru01 ~]# vi /etc/httpd/conf.d/ssl.conf
+ [root@kanrinmaru01 ~]# diff -u /etc/httpd/conf.d/ssl.conf.2012-1114 /etc/httpd/conf.d/ssl.conf
+ --- /etc/httpd/conf.d/ssl.conf.2012-1114        2012-02-07 23:47:02.000000000 +0900
+ +++ /etc/httpd/conf.d/ssl.conf  2012-11-14 16:24:31.606419320 +0900
+ @@ -15,7 +15,10 @@
+  # When we also provide SSL we have to listen to the
+  # the HTTPS port in addition.
+  #
+ -Listen 443
+ +# 2012/11/14 d-higuchi 443 -> 8443
+ +#Listen 443
+ +Listen 8443
+ +#
+
+  ##
+  ##  SSL Global Context
+ @@ -71,7 +74,10 @@
+  ## SSL Virtual Host Context
+  ##
+ 
+ -<VirtualHost _default_:443>
+ +# 2012/11/14 d-higuchi 443 -> 8443
+ +#<VirtualHost _default_:443>
+ +<VirtualHost _default_:8443>
+ +#
+
+  # General setup for the virtual host, inherited from global configuration
+  #DocumentRoot "/var/www/html"
+ @@ -218,5 +224,50 @@
+  CustomLog logs/ssl_request_log \
+            "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+
+ +# 2012/11/14 d-higuchi - Private Chef Reverse Proxy
+ +# reverse proxy only
+ +ProxyRequests off
+ +
+ +# SSL proxy
+ +SSLProxyEngine on
+ +
+ +# use mod_rewrite
+ +RewriteEngine on
+ +RewriteOptions Inherit
+ +
+ +# API access
+ +RewriteCond %{HTTP:X-Ops-Timestamp} .
+ +RewriteRule (^/.*$) /chefapi$1 [PT,L]
+ +
+ +<Location /chefapi>
+ +       ProxyPass                       https://127.0.0.1
+ +       ProxyPassReverse                https://127.0.0.1
+ +       ProxyPassReverseCookieDomain    219.117.239.177 127.0.0.1
+ +</Location>
+ +
+ +<Location /chefui>
+ +       order deny,allow
+ +       deny from all
+ +       allow from 219.117.239.160/255.255.255.224
+ +       allow from 192.168.1.0/255.255.255.0
+ +       allow from 192.168.2.0/255.255.255.0
+ +       allow from 192.168.10.0/255.255.255.0
+ +       allow from 115.177.128.0/255.255.128.0  # d-higuchi
+ +       allow from 221.249.136.50               # j-hotta
+ +
+ +       AuthUserFile    /etc/httpd/conf/htpasswd.chefui
+ +       AuthName        realm
+ +       AuthType        Basic
+ +       Require         valid-user
+ +
+ +       ProxyPass                       https://127.0.1.1
+ +       ProxyPassReverse                https://127.0.1.1
+ +       ProxyPassReverseCookieDomain    219.117.239.177 127.0.1.1
+ +</Location>
+ +#
+ +
+  </VirtualHost>
+ 
+ [root@kanrinmaru01 ~]#
+
+パスワードを設定する。PrimeDrive を参照のこと。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# htpasswd -c /etc/httpd/conf/htpasswd.chefui chefui
+ New password:
+ Re-type new password:
+ Adding password for user chefui
+ [root@kanrinmaru01 ~]#
+
+apache を起動する。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# /etc/init.d/httpd start
+ Starting httpd:                                            [  OK  ]
+ [root@kanrinmaru01 ~]#
+
+8443/tcp をファイアウォールで開ける。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# lokkit --enabled -q -p 8443:tcp
+ [root@kanrinmaru01 ~]#
+
+Private Chef Server の nginx のアクセス制限を強める。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# cp -a /var/opt/opscode/nginx/etc/nginx.conf /var/opt/opscode/nginx/etc/nginx.conf.2012-1114
+ [root@kanrinmaru01 ~]# vi /var/opt/opscode/nginx/etc/nginx.conf
+ [root@kanrinmaru01 ~]# diff -u /var/opt/opscode/nginx/etc/nginx.conf.2012-1017 /var/opt/opscode/nginx/etc/nginx.conf
+ --- /var/opt/opscode/nginx/etc/nginx.conf.2012-1017     2012-10-15 16:28:49.293812507 +0900
+ +++ /var/opt/opscode/nginx/etc/nginx.conf       2012-11-14 16:36:30.440394225 +0900
+ @@ -52,6 +52,12 @@
+    server {
+      listen 80;
+      server_name kanrinmaru01.akb.creationline.com;
+ +
+ +# 2012/11/14 add d-higuchi
+ +    allow 127.0.0.1;
+ +    deny  all;
+ +#
+ +
+      access_log /var/log/opscode/nginx/rewrite-port-80.log;
+      rewrite ^(.*) https://$server_name$1 permanent;
+    }
+ @@ -59,6 +65,12 @@
+    server {
+      listen 443;
+      server_name kanrinmaru01.akb.creationline.com;
+ +
+ +# 2012/11/14 add d-higuchi
+ +    allow 127.0.0.1;
+ +    deny  all;
+ +#
+ +
+      access_log /var/log/opscode/nginx/access.log opscode;
+      ssl on;
+      ssl_certificate /var/opt/opscode/nginx/ca/kanrinmaru01.akb.creationline.com.crt;
+ [root@kanrinmaru01 ~]#
+
+Private Chef Server の nginx を再起動する。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# private-chef-ctl nginx restart
+ ok: run: nginx: (pid 9394) 0s
+ [root@kanrinmaru01 ~]#
+
+.. note::
+
+ cookbook 管理が望ましい(TODO: 2012/11/14)
+
+Chef クライアントの設定
+-----------------------
+
+デフォルトでは 443/tcp にアクセスするので、もうアクセスできなくなっている。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# chef-client
+ [Wed, 14 Nov 2012 16:39:46 +0900] INFO: *** Chef 10.12.0 ***
+ [Wed, 14 Nov 2012 16:39:47 +0900] FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
+ [Wed, 14 Nov 2012 16:39:47 +0900] FATAL: Net::HTTPServerException: 403 "Forbidden"
+ [root@kanrinmaru01 ~]#
+
+/etc/chef/client.rb の chef_server_url のポートを変更する。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# cp -a /etc/chef/client.rb /etc/chef/client.rb.orig
+ [root@kanrinmaru01 ~]# vi /etc/chef/client.rb
+ [root@kanrinmaru01 ~]# diff -u /etc/chef/client.rb.orig /etc/chef/client.rb
+ --- /etc/chef/client.rb.orig    2012-10-16 12:47:39.117587049 +0900
+ +++ /etc/chef/client.rb 2012-11-14 16:41:30.432394200 +0900
+ @@ -1,5 +1,5 @@
+  log_level              :info
+  log_location           STDOUT
+ -chef_server_url                "https://219.117.239.177/organizations/kanrinmaru"
+ +chef_server_url                "https://219.117.239.177:8443/organizations/kanrinmaru"
+  validation_key         "/etc/chef/kanrinmaru-validator.pem"
+  validation_client_name "kanrinmaru-validator"
+ [root@kanrinmaru01 ~]#
+
+アクセスできるようになった。
+
+.. code-block:: console
+
+ [root@kanrinmaru01 ~]# chef-client
+ [Wed, 14 Nov 2012 16:41:56 +0900] INFO: *** Chef 10.12.0 ***
+ [Wed, 14 Nov 2012 16:41:57 +0900] INFO: Run List is [recipe[chef-client::delete_validation], recipe[yum::epel], recipe[fail2ban], recipe[logwatch], recipe[postfix], recipe[ntp]]
+        :
+        :
+        :
+ [root@kanrinmaru01 ~]#
+
 ..
  [EOF]
