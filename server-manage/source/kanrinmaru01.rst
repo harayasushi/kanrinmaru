@@ -721,13 +721,6 @@ apache を起動する。
  Starting httpd:                                            [  OK  ]
  [root@kanrinmaru01 ~]#
 
-8443/tcp をファイアウォールで開ける。
-
-.. code-block:: console
-
- [root@kanrinmaru01 ~]# lokkit --enabled -q -p 8443:tcp
- [root@kanrinmaru01 ~]#
-
 Private Chef Server の nginx のアクセス制限を強める。
 
 .. code-block:: console
@@ -819,6 +812,15 @@ Chef クライアントの設定
         :
         :
  [root@kanrinmaru01 ~]#
+
+ファイアウォールの設定
+----------------------
+
+run_list に以下を追加するだけでOK。
+
+- recipe[lokkit::service_ssh]
+- recipe[lokkit::https_tcp]
+- recipe[lokkit::8443_tcp]
 
 ..
  [EOF]

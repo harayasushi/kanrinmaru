@@ -377,5 +377,12 @@ Chef クライアントの設定
         :
  [root@kanrinmaru03 ~]#
 
+ファイアウォールの設定
+----------------------
+
+run_list に以下を追加するだけでOK。
+
+- recipe[lokkit::service_ssh]
+
 ..
  [EOF]
