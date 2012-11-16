@@ -1,0 +1,73 @@
+-----------------------------------------------------------------------------
+11/12
+
+■NC研修
+* CloudStack 環境構築支援
+- 完了。あとは当日を待つのみ。
+* Q&Aであった話。
+- 今度 Chef ハンズオンがあったら是非参加したい (IDCF でやったようなやつ)
+- IDCF Chef ハンズオンのスライドができれば欲しい。
+- Cookbook の作り方の勉強会があったら嬉しい。
+- OSS/Hosted/Private Chef Server についてもっと知りたい。
+- Cookbook のコードがそのまま構築手順書になるのは大変便利そうなので活用したい。
+- CloudStack と Chef Server をセットで提供できるといい感じになりそう。
+
+-----------------------------------------------------------------------------
+11/13
+
+■scalr.jp
+* 和訳確認
+- 全ページを確認して修正した。
+* 修正ポリシー
+- いわゆる全角文字の禁止
+- 日本語の文法
+- 固有名詞
+- 技術用語の訳しかた
+- 漢字→ひらがな
+
+■ソリューションの紹介資料
+* 査読
+- いろいろ突っ込み、修正。
+
+-----------------------------------------------------------------------------
+11/14
+
+■NPC chef デモ
+* 発表スライド
+- チェックと修正。
+
+■Private Chef Server のアクセス制限
+* リバースプロキシ案
+- Sean が送ってきた別サーバの Reverse Proxy を検証 → ちゃんと使える。
+- Private Chef Server と同一サーバ上の Reverse Proxy を検証 → こちらも使える。
+* bitbucket/kanrinmaru/server-manage/ の更新
+- 219.117.239.177 (kanrinmaru01 / Private Chef Server)
+- 219.117.239.178 (kanrinmaru02 / enStratus)
+- 219.117.239.179 (kanrinmaru03 / scalr)
+- 219.117.239.190 (kanrinmaru07 / NC CloudStack デモ仮想環境)
+- 219.117.239.188 (sandbox)
+- 192.168.122.11 (jenkins-master.akb-sb)
+
+■lokkit cookbook
+* 0.0.2, 0.0.3
+- ssh:tcp, https:tcp, 8443:tcp, service=ssh を開けるレシピを追加。
+- https://github.com/cl-lab-k/lokkit.git に push。
+* 219.117.239.177 (kanrinmaru01 / Private Chef Server)
+- lokkit::service_ssh, lokkit::https_tcp, lokkit::8443_tcp を追加。
+* 219.117.239.178 (kanrinmaru02 / enStratus)
+- lokkit::service_ssh, lokkit::https_tcp を追加。
+* 219.117.239.179 (kanrinmaru03 / scalr)
+- lokkit::service_ssh を追加。
+
+-----------------------------------------------------------------------------
+11/15
+
+■NPC chef デモ
+* 質疑応答
+- 特に問題なく終了。
+* スライド
+- 共同で修正できるように PPT ではなく、テキストベースで共同作業できる
+  スライド生成ツールを使うようにしたほうがいい。
+  候補は landslide (python)、rabbit (ruby)、showoff (ruby) など。
+
+-----------------------------------------------------------------------------
