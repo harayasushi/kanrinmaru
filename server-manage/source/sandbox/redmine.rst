@@ -299,13 +299,13 @@ redmine のインストール
 	:
 
 - redmine/instances/default のデータベースを dbconfig-common で設定しますか？
--- [はい]
+	- [はい]
 - redmine/instances/default が使うデータベースの種類
--- [mysql]
+	- [mysql]
 - データベースの管理権限を持つユーザのパスワード
--- /etc/mysql/grants.sql, /var/cache/local/preseeding/mysql-server.seed に記載あり
+	- /etc/mysql/grants.sql, /var/cache/local/preseeding/mysql-server.seed に記載あり
 - redmine/instances/default 用の MySQL アプリケーションパスワード
--- [空白でランダムパスワードを生成する]
+	- [空白でランダムパスワードを生成する]
 
 apache2 のインストール
 ----------------------
