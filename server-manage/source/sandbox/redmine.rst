@@ -359,7 +359,7 @@ redmine と apache2 の連携
 .. code-block:: console
 
  root@redmine:~# cat > /etc/apache2/sites-available/redmine
- <VirtualHost *:80>
+ <VirtualHost \*:80>
          DocumentRoot /var/www/
          <Directory />
                  Options FollowSymLinks
@@ -388,6 +388,17 @@ redmine と apache2 の連携
  root@redmine:~# /etc/init.d/apache2 reload
   * Reloading web server config apache2                                   [ OK ] 
  root@redmine:~#
+
+redmine のユーザ登録
+--------------------
+
+まず、右上の「登録する」リンクからユーザ登録画面に移動する。
+必要事項を埋めてボタンを押して登録する。
+ただし、すぐに使えるようにはならず、管理者の承認が必要。
+
+右上の「ログイン」から管理者でログインする。ID/PW は PrimeDrive を参照のこと。
+左上の「管理」から「ユーザ」を選択し、フィルタのステータスを「すべて」にする。
+そうすると仮登録になっているユーザも表示されるので、承認することでそのユーザがログインできるようになる。
 
 ..
  [EOF]
