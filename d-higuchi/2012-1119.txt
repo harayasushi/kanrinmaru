@@ -1,0 +1,23 @@
+-----------------------------------------------------------------------------
+11/19
+
+■192.168.122.21 (redmine.akb-sb)
+* OS インストール
+- ubuntu 12.04.1 LTS
+* Private Chef Server への登録
+- いつも通りに行う。
+- run_list に chef-client::delete_validation, ntp. logwatch, postfix を追加。
+* redmine のインストール
+- run_list に mysql::server, apache2 を追加。
+- redmine, redmine-mysql, libapache2-mod-passenger は apt でインストールする。
+* sphinx
+- server-manage/sandbox/redmine.rst を作成。
+
+■219.117.239.188 (sandbox)
+* apache2 設定
+- /redmine を http://192.168.122.21/redmine にリバースプロキシ設定。
+- IPアドレス制限と、Basic認証もかける。
+* sphinx
+- server-manage/sandbox.rst を更新。
+
+-----------------------------------------------------------------------------
