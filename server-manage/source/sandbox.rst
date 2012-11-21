@@ -688,5 +688,48 @@ redmine に接続するための apache2 の設定
  Adding password for user redmine
  root@sandbox:~# 
 
+jenkins-master の rabbit ディレクトリに接続するための apache2 の設定
+--------------------------------------------------------------------
+
+.. code-block:: console
+
+ root@sandbox:~# vi /etc/apache2/sites-available/jenkins-master-rabbit
+ # 2012/11/21 d-higuchi
+
+ ProxyRequests           Off
+ ProxyPass               /rabbit         http://192.168.122.11/rabbit
+ ProxyPassReverse        /rabbit         http://192.168.122.11/rabbit
+
+ <Location /rabbit>
+        order deny,allow
+        deny from all
+        allow from localhost
+        # CL AKB
+        allow from 219.117.239.160/27
+        allow from 192.168.2.0/24
+        # d-higuchi
+        allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
+        allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
+        # j-hotta
+        allow from 221.249.136.50/29
+        # y-uemura
+        allow from 124.35.220.7
+        AuthUserFile    /etc/apache2/htpasswd.jenkins-master
+        AuthName        jenkins-master
+        AuthType        Basic
+        Require         valid-user
+ </Location>
+ root@sandbox:~#
+
+.. code-block:: console
+
+ root@sandbox:~# a2ensite jenkins-master-rabbit
+ Enabling site jenkins-master-rabbit.
+ To activate the new configuration, you need to run:
+   service apache2 reload
+ root@sandbox:~# /etc/init.d/apache2 reload
+ [ ok ] Reloading web server config: apache2.
+ root@sandbox:~#
+
 ..
  [EOF]
