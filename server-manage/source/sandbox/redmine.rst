@@ -307,6 +307,35 @@ redmine のインストール
 - redmine/instances/default 用の MySQL アプリケーションパスワード
 	- [空白でランダムパスワードを生成する]
 
+redmine の設定
+--------------
+
+メール通知のためのconfiguration.ymlの設定
+http://redmine.jp/faq/general/mail_notification/
+
+.. code-block:: console
+
+ root@redmine:~# vi /etc/redmine/default/configuration.yml
+ default:
+   email_delivery:
+     delivery_method: :smtp
+     smtp_settings:
+       address: localhost
+       port: 25
+       domain: creationline.com
+ root@redmine:~# chown root.www-data /etc/redmine/default/configuration.yml
+ root@redmine:~# chmod 640 /etc/redmine/default/configuration.yml
+ root@redmine:~# 
+
+SCM 各種コマンドのインストール
+
+.. code-block:: console
+
+ root@redmine:~# apt-get install subversion darcs mercurial cvs bzr git 
+	:
+	:
+	:
+
 apache2 のインストール
 ----------------------
 
