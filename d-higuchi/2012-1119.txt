@@ -38,3 +38,27 @@
 - NPC セミナーの PPT を RD で書き直してどれだけ使い物になるか実験。
 
 -----------------------------------------------------------------------------
+11/21
+
+■192.168.122.21 (redmine.akb-sb)
+* メール通知設定
+- Web UI からはできない。
+- http://redmine.jp/faq/general/mail_notification/
+- /etc/redmine/default/configuration.yml
+- server-manage/sandbox/redmine.rst を更新。
+* git との連携
+- あまりいけてない。社内 git レポジトリをどう持つか検討。
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* rabbit インストール
+- python-blockdiag と enscript のインストールも必要。
+- server-manage/sandbox.rst を更新。
+- server-manage/sandbox/jenkins-master.rst を更新。
+
+■テキストベースのスライドツール選定
+* rabbit
+- いろいろいけてない箇所もあるけど、一応完成。
+- https://bitbucket.org/d_higuchi/chef-seminar-wordpress
+- http://219.117.239.188/rabbit/chef-seminar-wordpress.pdf
+
+-----------------------------------------------------------------------------
