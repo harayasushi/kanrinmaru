@@ -493,7 +493,7 @@ http://d.hatena.ne.jp/tk0miya/20111212/p2
          allow from 219.117.239.160/255.255.255.224
          allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
          AuthUserFile    /etc/apache2/htpasswd.jenkins-master
-         AuthName        realm
+         AuthName        jenkins-master
          AuthType        Basic
          Require         valid-user
  </Location>
@@ -552,7 +552,7 @@ jenkins-master の sphinx ディレクトリに接続するための apache2 の
  	# y-uemura
  	allow from 124.35.220.7
  	AuthUserFile	/etc/apache2/htpasswd.jenkins-master
- 	AuthName	realm
+ 	AuthName	jenkins-master
  	AuthType	Basic
  	Require		valid-user
  </Location>
@@ -623,7 +623,113 @@ Chef クライアントの設定
         :
         :
         :
-root@sandbox:~#
+ root@sandbox:~#
+
+redmine に接続するための apache2 の設定
+---------------------------------------
+
+.. code-block:: console
+
+ root@sandbox:~# cat > /etc/apache2/sites-available/redmine
+ # 2012/11/19 d-higuchi
+
+ ProxyRequests		Off
+ ProxyPass		/redmine	http://192.168.122.21/redmine
+ ProxyPassReverse	/redmine	http://192.168.122.21/redmine
+
+ <Location /redmine>
+	order deny,allow
+	deny from all
+	allow from localhost
+	# CL AKB
+	allow from 219.117.239.160/27
+	allow from 192.168.2.0/24
+	# d-higuchi
+	allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
+	# j-hotta
+	allow from 221.249.136.50/29
+	# y-uemura
+	allow from 124.35.220.7
+	AuthUserFile	/etc/apache2/htpasswd.redmine
+	AuthName	redmine
+	AuthType	Basic
+	Require		valid-user
+ </Location>
+ root@sandbox:~# 
+
+.. code-block:: console
+
+ root@sandbox:~# ls -l /etc/apache2/sites-*/redmine
+ -rw-r--r-- 1 root root 538 Nov 19 16:16 /etc/apache2/sites-available/redmine
+ root@sandbox:~# 
+
+ root@sandbox:~# a2ensite redmine
+ Enabling site redmine.
+ To activate the new configuration, you need to run:
+   service apache2 reload
+ root@sandbox:~# 
+
+ root@sandbox:~# ls -l /etc/apache2/sites-*/redmine
+ -rw-r--r-- 1 root root 538 Nov 19 16:16 /etc/apache2/sites-available/redmine
+ lrwxrwxrwx 1 root root  26 Nov 19 16:17 /etc/apache2/sites-enabled/redmine -> ../sites-available/redmine
+ root@sandbox:~#
+
+.. code-block:: console
+
+ root@sandbox:~# /etc/init.d/apache2 restart
+ [ ok ] Restarting web server: apache2 ... waiting .
+ root@sandbox:~# 
+
+.. code-block:: console
+
+ root@sandbox:~# htpasswd -c /etc/apache2/htpasswd.redmine redmine
+ New password: 
+ Re-type new password: 
+ Adding password for user redmine
+ root@sandbox:~# 
+
+jenkins-master の rabbit ディレクトリに接続するための apache2 の設定
+--------------------------------------------------------------------
+
+.. code-block:: console
+
+ root@sandbox:~# vi /etc/apache2/sites-available/jenkins-master-rabbit
+ # 2012/11/21 d-higuchi
+
+ ProxyRequests           Off
+ ProxyPass               /rabbit         http://192.168.122.11/rabbit
+ ProxyPassReverse        /rabbit         http://192.168.122.11/rabbit
+
+ <Location /rabbit>
+        order deny,allow
+        deny from all
+        allow from localhost
+        # CL AKB
+        allow from 219.117.239.160/27
+        allow from 192.168.2.0/24
+        # d-higuchi
+        allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
+        allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
+        # j-hotta
+        allow from 221.249.136.50/29
+        # y-uemura
+        allow from 124.35.220.7
+        AuthUserFile    /etc/apache2/htpasswd.jenkins-master
+        AuthName        jenkins-master
+        AuthType        Basic
+        Require         valid-user
+ </Location>
+ root@sandbox:~#
+
+.. code-block:: console
+
+ root@sandbox:~# a2ensite jenkins-master-rabbit
+ Enabling site jenkins-master-rabbit.
+ To activate the new configuration, you need to run:
+   service apache2 reload
+ root@sandbox:~# /etc/init.d/apache2 reload
+ [ ok ] Reloading web server config: apache2.
+ root@sandbox:~#
 
 ..
  [EOF]

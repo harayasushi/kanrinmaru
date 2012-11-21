@@ -118,7 +118,7 @@ chef-client を initscripts に登録
 
 .. code-block:: console
 
- root@jenkins-master:~# ls -l /etc/*.d/*chef-client*
+ root@jenkins-master:~# ls -l /etc/\*.d/\*chef-client\*
  -rwxr-xr-x 1 root root 4538 11月  2 15:25 /etc/init.d/chef-client
  lrwxrwxrwx 1 root root   21 11月  2 15:25 /etc/rc0.d/K99chef-client -> ../init.d/chef-client
  lrwxrwxrwx 1 root root   21 11月  2 15:25 /etc/rc1.d/K99chef-client -> ../init.d/chef-client
@@ -418,17 +418,9 @@ jenkins ユーザに ssh キーペアの作成、パスフレーズは空で。
  The key fingerprint is:
  42:d0:1a:36:cb:6c:bb:fc:28:91:42:e2:1e:d5:92:b1 jenkins@jenkins-master
  The key's randomart image is:
- +--[ RSA 2048]----+
- |    ..           |
- |   .+..          |
- |   +==.          |
- |.. E*o           |
- |+ .o... S        |
- |.oo .  .         |
- |...o .           |
- | .. o.           |
- |   ....          |
- +-----------------+
+
+	:
+
  jenkins@jenkins-master:~$ 
  jenkins@jenkins-master:~$ ls -la .ssh/
  合計 16
@@ -459,7 +451,9 @@ Jenkinsの管理 > プラグインの管理 > 利用可能 > Git Plugin > イン
 
 インストールが完了したら、
 
-新規ジョブの作成
+.. code-block:: console
+
+ 新規ジョブの作成
 	ジョブ名: chef-training-p
 	フリースタイル・プロジェクトのビルド
 
@@ -467,7 +461,7 @@ Jenkinsの管理 > プラグインの管理 > 利用可能 > Git Plugin > イン
 	Repository URL: ssh://git@bitbucket.org/j_hotta/chef-training-p.git
 
 	SCMをポーリング: on
-	スケジュール: */10 * * * *
+	スケジュール: \*/10 \* \* \* \*
 
 	ビルド手順の追加
 	シェルの実行:
@@ -530,6 +524,98 @@ Chef クライアントの設定
         :
         :
         :
+ root@jenkins-master:~#
+
+sphinx で PDF を生成するための TeXLive のインストール
+-----------------------------------------------------
+
+Ubuntu 12.04 LTS の TeXLive は古いので UTF-8 が通らない。
+そのため Ubuntu 12.10 から TeXLive を借りてくる(APT-Pinning)。
+もしかしたら Ubuntu 12.10 に完全に上げてしまったほうがいいのかも？
+
+.. code-block:: console
+
+ root@jenkins-master:~# cat > /etc/apt/apt.conf.d/01ubuntu
+ # 2012/11/20 d-higuchi add
+ # https://help.ubuntu.com/community/PinningHowto
+ APT::Default-Release "precise";
+ root@jenkins-master:~# 
+
+.. code-block:: console
+
+ root@jenkins-master:~# cat /etc/apt/sources.list.d/quantal.list 
+ # 2012/11/20 d-higuchi add
+ deb http://jp.archive.ubuntu.com/ubuntu/ quantal main restricted
+ deb http://jp.archive.ubuntu.com/ubuntu/ quantal-updates main restricted
+ deb http://jp.archive.ubuntu.com/ubuntu/ quantal universe
+ deb http://jp.archive.ubuntu.com/ubuntu/ quantal-updates universe
+ deb http://jp.archive.ubuntu.com/ubuntu/ quantal multiverse
+ deb http://jp.archive.ubuntu.com/ubuntu/ quantal-updates multiverse
+ deb http://jp.archive.ubuntu.com/ubuntu/ quantal-backports main restricted universe multiverse
+ deb http://security.ubuntu.com/ubuntu quantal-security main restricted
+ deb http://security.ubuntu.com/ubuntu quantal-security universe
+ deb http://security.ubuntu.com/ubuntu quantal-security multiverse
+ root@jenkins-master:~# 
+
+.. code-block:: console
+
+ root@jenkins-master:~# apt-get install \
+	texlive-lang-cjk=2012.20120611-2 \
+	ruby \
+	texlive-base=2012.20120611-4 \
+	texlive-doc-base=2012.20120611-1 \
+	texlive-binaries=2012.20120628-3build1 \
+	texlive-common=2012.20120611-4 \
+	latex-cjk-common=4.8.3+git20120621-1 \
+	latex-cjk-xcjk=4.8.2+git20111216-1 \
+	latex-cjk-chinese=4.8.3+git20120621-1 \
+	latex-cjk-japanese=4.8.3+git20120621-1 \
+	tex-common=3.13 \
+	texlive-latex-base=2012.20120611-4 \
+	texlive-font-utils=2012.20120611-2 \
+	libfontconfig1=2.10.1-0ubuntu3 \
+	libpoppler28=0.20.4-0ubuntu1 \
+	texlive-xetex=2012.20120611-4 \
+	texlive-doc-zh=2012.20120611-1 \
+	libtiff5=4.0.2-1ubuntu2.1 \
+	liblzma5=5.1.1alpha+20120614-1 \
+	fontconfig-config=2.10.1-0ubuntu3 \
+	tipa=2:1.3-19 \
+	poppler-data=0.4.5-10 \
+	texlive-latex-recommended=2012.20120611-4 \
+	texlive-latex-extra=2012.20120611-2 \
+	texlive-pictures=2012.20120611-4 \
+	texlive-fonts-recommended=2012.20120611-4
+
+rabbit との連携
+---------------
+
+rabbit が必要とするソフトウェアのインストール。
+
+.. code-block:: console
+
+ root@jenkins-master:~# apt-get install ruby1.9.1 ruby1.9.1-dev \
+	libcairo2-dev libfontconfig1-dev=2.10.1-0ubuntu3 \
+	libxml2-dev libxslt1-dev \
+	python-blockdiag \
+	enscript
+	:
+	:
+	:
+
+.. code-block:: console
+
+ root@jenkins-master:~# gem1.9.1 install rabbit --no-rdoc --no-ri
+	:
+	:
+	:
+
+ファイル置き場の作成。
+
+.. code-block:: console
+
+ root@jenkins-master:~# mkdir /var/www/rabbit
+ root@jenkins-master:~# chown jenkins.jenkins /var/www/rabbit
  root@jenkins-master:~#
 
 ..

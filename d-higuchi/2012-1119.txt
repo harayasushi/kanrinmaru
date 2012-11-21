@@ -1,0 +1,64 @@
+-----------------------------------------------------------------------------
+11/19
+
+■192.168.122.21 (redmine.akb-sb)
+* OS インストール
+- ubuntu 12.04.1 LTS
+* Private Chef Server への登録
+- いつも通りに行う。
+- run_list に chef-client::delete_validation, ntp. logwatch, postfix を追加。
+* redmine のインストール
+- run_list に mysql::server, apache2 を追加。
+- redmine, redmine-mysql, libapache2-mod-passenger は apt でインストールする。
+* sphinx
+- server-manage/sandbox/redmine.rst を作成。
+
+■219.117.239.188 (sandbox)
+* apache2 設定
+- /redmine を http://192.168.122.21/redmine にリバースプロキシ設定。
+- IPアドレス制限と、Basic認証もかける。
+* sphinx
+- server-manage/sandbox.rst を更新。
+
+-----------------------------------------------------------------------------
+11/20
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* sphinx で日本語 PDF の作成
+- Ubuntu 12.04 LTS の TeXLive では UTF-8 が扱えない。
+- Ubuntu 12.10 から TeXLive 環境を借りてくる(apt pinning)。
+  ただ、mendex は依然としてうまく動かないのでコメントアウトする。
+  手順が面倒なので Ubuntu 12.10 に完全に上げたほうがいいんだろうか？
+
+■テキストベースのスライドツール選定
+* rabbit
+- markdown でも書けるけど、まだ限定サポートなのかちょっと機能に劣る。
+- RD が一番機能がサポートされている。blockdiag コードの埋め込みも可能。
+- テキストベースなのは変わらないので RD で書いてみることにする。
+- NPC セミナーの PPT を RD で書き直してどれだけ使い物になるか実験。
+
+-----------------------------------------------------------------------------
+11/21
+
+■192.168.122.21 (redmine.akb-sb)
+* メール通知設定
+- Web UI からはできない。
+- http://redmine.jp/faq/general/mail_notification/
+- /etc/redmine/default/configuration.yml
+- server-manage/sandbox/redmine.rst を更新。
+* git との連携
+- あまりいけてない。社内 git レポジトリをどう持つか検討。
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* rabbit インストール
+- python-blockdiag と enscript のインストールも必要。
+- server-manage/sandbox.rst を更新。
+- server-manage/sandbox/jenkins-master.rst を更新。
+
+■テキストベースのスライドツール選定
+* rabbit
+- いろいろいけてない箇所もあるけど、一応完成。
+- https://bitbucket.org/d_higuchi/chef-seminar-wordpress
+- http://219.117.239.188/rabbit/chef-seminar-wordpress.pdf
+
+-----------------------------------------------------------------------------

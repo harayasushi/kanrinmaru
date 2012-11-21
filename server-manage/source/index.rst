@@ -17,6 +17,7 @@ Contents:
    kanrinmaru07.rst
    sandbox.rst
    sandbox/jenkins-master.rst
+   sandbox/redmine.rst
 
 Indices and tables
 ==================
