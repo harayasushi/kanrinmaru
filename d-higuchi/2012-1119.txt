@@ -62,3 +62,24 @@
 - http://219.117.239.188/rabbit/chef-seminar-wordpress.pdf
 
 -----------------------------------------------------------------------------
+11/22
+
+■NC研修
+* 発表資料
+- 査読
+- 気になった箇所を修正。
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* sphinx pdf で空白ページができる
+- 書籍に印刷したとき、章タイトルが偶数・奇数ページで不自然にならないように、
+  openright、\cleardoublepage で制御している。
+- /usr/share/sphinx/texinputs/sphinxmanual.cls に制御があるけれど、
+  perl -p -i -e 's/.*{openright}.*\n//;s/.*cleardoublepage.*\n//' sphinxmanual.cls
+  として Jenkins のジョブで制御してやるほうがいいと思う。
+
+■192.168.122.21 (redmine.akb-sb)
+* XLS Export Plugin
+- http://www.redmine.org/plugins/redmine_xls_export
+- インストール。
+
+-----------------------------------------------------------------------------
