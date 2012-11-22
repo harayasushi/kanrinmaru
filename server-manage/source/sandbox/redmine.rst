@@ -418,6 +418,99 @@ redmine と apache2 の連携
   * Reloading web server config apache2                                   [ OK ] 
  root@redmine:~#
 
+redmine プラグインインストール
+------------------------------
+
+XLS Export プラグイン
+http://www.redmine.org/plugins/redmine_xls_export
+
+必要な RubyGems をインストール。
+
+.. code-block:: console
+
+ root@redmine:~# gem install spreadsheet rubyzip --no-rdoc --no-ri
+ Fetching: ruby-ole-1.2.11.5.gem (100%)
+ Fetching: spreadsheet-0.7.4.gem (100%)
+ Successfully installed ruby-ole-1.2.11.5
+ Successfully installed spreadsheet-0.7.4
+ Fetching: rubyzip-0.9.9.gem (100%) 
+ Successfully installed rubyzip-0.9.9
+ 3 gems installed
+ root@redmine:~# 
+
+プラグインアーカイブをダウンロード
+
+.. code-block:: console
+
+ ubuntu@redmine:~$ wget http://www.redmine.org/attachments/download/7705/redmine_plugin_views_revisions_v001.zip http://www.redmine.org/attachments/download/7854/redmine_xls_export_v021.zip
+ --2012-11-22 18:52:02--  http://www.redmine.org/attachments/download/7705/redmine_plugin_views_revisions_v001.zip
+ www.redmine.org (www.redmine.org) をDNSに問いあわせています... 46.4.36.71
+ www.redmine.org (www.redmine.org)|46.4.36.71|:80 に接続しています... 接続しました。
+ HTTP による接続要求を送信しました、応答を待っています... 200 OK
+ 長さ: 特定できません [application/x-zip-compressed]
+ `redmine_plugin_views_revisions_v001.zip' に保存中
+
+    [   <=>                                 ] 14,702      26.1K/s   時間 0.6s
+
+ 2012-11-22 18:52:03 (26.1 KB/s) - `redmine_plugin_views_revisions_v001.zip' へ保存終了 [14702]
+
+ --2012-11-22 18:52:03--  http://www.redmine.org/attachments/download/7854/redmine_xls_export_v021.zip
+ www.redmine.org:80 への接続を再利用します。
+ HTTP による接続要求を送信しました、応答を待っています... 200 OK
+ 長さ: 特定できません [application/x-zip-compressed]
+ `redmine_xls_export_v021.zip' に保存中
+
+    [   <=>                                 ] 31,603      56.0K/s   時間 0.6s
+
+ 2012-11-22 18:52:04 (56.0 KB/s) - `redmine_xls_export_v021.zip' へ保存終了 [31603]
+
+ FINISHED --2012-11-22 18:52:04--
+ Total wall clock time: 2.0s
+ Downloaded: 2 files, 45K in 1.1s (41.0 KB/s)
+ ubuntu@redmine:~$
+
+インストール先プラグインディレクトリに移動し、アーカイブを展開する。
+
+.. code-block:: console
+
+ root@redmine:~# cd /usr/share/redmine/vendor/plugins/
+ root@redmine:/usr/share/redmine/vendor/plugins# unzip -q /home/ubuntu/redmine_plugin_views_revisions_v001.zip
+ root@redmine:/usr/share/redmine/vendor/plugins# unzip -q /home/ubuntu/redmine_xls_export_v021.zip
+ root@redmine:/usr/share/redmine/vendor/plugins#
+
+ root@redmine:/usr/share/redmine/vendor/plugins# ls -ld redmine_*
+ drwxr-xr-x 4 root root 4096  6月  6 20:27 redmine_plugin_views_revisions
+ drwxr-xr-x 7 root root 4096  6月 26 17:11 redmine_xls_export
+ root@redmine:/usr/share/redmine/vendor/plugins#
+
+rake を実行して redmine に反映させる。
+
+.. code-block:: console
+
+ root@redmine:/usr/share/redmine# rake redmine:plugins:process_version_change RAILS_ENV=production
+	:
+	:
+	:
+ Please install RDoc 2.4.2+ to generate documentation.
+ Redmine version: 1.3.2
+ Redmine revision: unknown
+ ---------- Updating revisions.... ----------
+ -------- processing plugin redmine_xls_export
+    Removing obsolete file /app/views/issues/xls_export_action.rhtml
+    Using version 1.3.0 for file /app/views/xls_export/index.html.erb
+ -------- processing plugin redmine_plugin_views_revisions
+ Done
+ root@redmine:/usr/share/redmine#
+
+apache2 を再起動する。
+
+.. code-block:: console
+
+ root@redmine:/usr/share/redmine# /etc/init.d/apache2 restart
+  * Restarting web server apache2
+  ... waiting    ...done.
+ root@redmine:/usr/share/redmine#
+
 redmine のユーザ登録
 --------------------
 
