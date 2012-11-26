@@ -1,20 +1,17 @@
-11/12 Monday
+11/26 daily brief
 
-- Sent LT for Scalr User Group @ Cloudstack User 会
-    >  awaiting review
-- Pushed latest for Scalr.jp to bitbucket
-- Set up Noah Cloud account @ IDCF
-    > credentials: username: Cladmin1234 password: Cladmin123
-- Agreed on 11/30 Scalr Hands On
+- Scalr.jp website translation 
+- Sent Hands-on to Kajikawa and Narita for checking
+- Contacted SBI
+- Created test farm 2 in Scalr 
+   - not running for some reason - check up
+- Reply from Uniadex
+   - set date for mtg in mid-Dec / nxt year
 
-
-To do list for 11/13
-
-- Perform WordPress on Scalr.jp using Noah Cloud
-- Update LT for CloudStack User Group 11/15
-- Announce 11/30 Hands On on ATND
-- Write brief for users coming to the ScalrJP Hands On
-
-To do list (others)
-- Write presentation for GREE and DeNA
-- Approach Nexon, GREE DeNA and BandaiNamco
+To Do
+- Set up mtg with SBI
+- Set up mtg with Uniadex
+- Create Scalr sales presentation / documentation
+- Finetune Scalr hands-on presentation
+- Ensure Scalr works for hands-on
+- Create general sales presentations
