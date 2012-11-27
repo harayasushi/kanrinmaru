@@ -244,7 +244,7 @@ aliases の設定
   # See man 5 aliases for format
   postmaster:    root
  +# 2012/11/02 d-higuchi add
- +root:	kanrinmaru@creationline.com
+ +root:	solution@creationline.com
  +#
  root@jenkins-master:~# newaliases 
  root@jenkins-master:~# 
@@ -469,7 +469,7 @@ Jenkinsの管理 > プラグインの管理 > 利用可能 > Git Plugin > イン
 		rsync -av --delete /var/lib/jenkins/jobs/chef-traning-p/workspace/build/html/ /var/www/sphinx/chef-training-p
 
 	E-mail通知: on
-	宛先: kanrinmaru@creationline.com
+	宛先: solution@creationline.com
 	不安定ビルドも逐一メールを送信: on
 	ビルドを壊した個人にも別途メールを送信: off
 

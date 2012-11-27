@@ -225,7 +225,7 @@ aliases の設定
   postmaster:    root
  +
  +# 2012/11/19 d-higuchi add
- +root: kanrinmaru@creationline.com
+ +root: solution@creationline.com
  +#
  root@redmine:~# newaliases 
  root@redmine:~# 
