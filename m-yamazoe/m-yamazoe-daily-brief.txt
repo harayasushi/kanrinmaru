@@ -1,20 +1,20 @@
-11/12 Monday
+11/27 daily brief
 
-- Sent LT for Scalr User Group @ Cloudstack User 会
-    >  awaiting review
-- Pushed latest for Scalr.jp to bitbucket
-- Set up Noah Cloud account @ IDCF
-    > credentials: username: Cladmin1234 password: Cladmin123
-- Agreed on 11/30 Scalr Hands On
+- Scalr.jp website translation - concluded
+- Sent Hands-on preparation material to Kajikawa and Narita for checking
+   - checked preparation material, will finish main hands-on by end of today;
+       IDCF API is currently under maintenance, cannot access API
+- Contacted SBI
+   - sent mail, awaiting investment criteria
+- Created test farm 2 in Scalr 
+   - still not running for some reason - checking up with IDCF
+- Reply from Uniadex
+   - sent mail, awaiting response
 
-
-To do list for 11/13
-
-- Perform WordPress on Scalr.jp using Noah Cloud
-- Update LT for CloudStack User Group 11/15
-- Announce 11/30 Hands On on ATND
-- Write brief for users coming to the ScalrJP Hands On
-
-To do list (others)
-- Write presentation for GREE and DeNA
-- Approach Nexon, GREE DeNA and BandaiNamco
+To Do
+- Set up mtg with SBI - awaiting response
+- Set up mtg with Uniadex - awaiting response 
+- Create Scalr sales presentation / documentation
+- Finetune Scalr hands-on presentation - to be completed by end of Wednesday
+- Ensure Scalr works for hands-on - does not work (ServiceOfferingID error)
+- Create general sales presentations 11/27 - not done yet
