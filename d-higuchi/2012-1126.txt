@@ -13,3 +13,35 @@
 - RHEL 6.3 の kexec-tools に更新したところ解消された。
 
 -----------------------------------------------------------------------------
+11/27
+
+■K
+* PXE boot
+- kernel option で console=tty0 console=ttyS0,115200 を追加して
+  rhbg と quiet を削除してすべてのメッセージを表示させればよい。
+* 仮想ルータが起動しなくなった
+- virsh dump で QEMU イメージ(起動できるイメージ)が取得できる。
+  これにはメモリ、CPUイメージも含まれているので strings や less で
+  中身の文字列情報が取れる。つまり、kernel message も取ることができる。
+
+■kanrinmaru@ 廃止
+* solution@ に宛先変更
+- j_hotta Bitbucket Notification
+- Redmine (対象なし)
+- Jenkins ジョブ通知
+- logwatch
+
+■219.117.239.188 (sandbox)
+* バックアップ
+- HDD を追加。
+- lvm スナップショット + rsync のバックアップスクリプトを設置。
+
+■192.168.122.21 (redmine.akb-sb)
+* 運用・管理
+- インフラチームに展開。
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* easy_install
+- sphinxjp.themes.htmlslide のインストール。→一旦アンインストール。
+
+-----------------------------------------------------------------------------
