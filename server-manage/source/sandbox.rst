@@ -731,5 +731,187 @@ jenkins-master の rabbit ディレクトリに接続するための apache2 の
  [ ok ] Reloading web server config: apache2.
  root@sandbox:~#
 
+LVM バックアップのテスト
+------------------------
+
+バックアップ HDD にパーティション作成。
+
+.. code-block:: console
+
+ root@sandbox:~# fdisk /dev/sdb
+	:
+ root@sandbox:~# fdisk -l /dev/sdb
+ 
+ Disk /dev/sdb: 2000.4 GB, 2000398934016 bytes
+ 81 heads, 63 sectors/track, 765633 cylinders, total 3907029168 sectors
+ Units = sectors of 1 * 512 = 512 bytes
+ Sector size (logical/physical): 512 bytes / 4096 bytes
+ I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+ Disk identifier: 0x3814e741
+ 
+    Device Boot      Start         End      Blocks   Id  System
+ /dev/sdb1            2048  3907029167  1953513560   83  Linux
+ root@sandbox:~# 
+
+バックアップパーティションにファイルシステム作成。
+
+.. code-block:: console
+
+ root@sandbox:~# mkfs.ext4 -m0 /dev/sdb1 
+	:
+ root@sandbox:~#
+ 
+バックアップファイルシステムを mount。
+
+.. code-block:: console
+
+ root@sandbox:~# mkdir /backup
+ root@sandbox:~# 
+ 
+ root@sandbox:~# cp -a /etc/fstab /etc/fstab.2012-1127
+ root@sandbox:~# vi /etc/fstab
+ root@sandbox:~# diff -u /etc/fstab.2012-1127 /etc/fstab
+ --- /etc/fstab.2012-1127	2012-11-01 18:02:10.000000000 +0900
+ +++ /etc/fstab	2012-11-27 13:18:31.000000000 +0900
+ @@ -11,3 +11,7 @@
+  # /boot was on /dev/sda1 during installation
+  UUID=fd36e6b3-e3b6-4698-9d97-af60bd25ba33 /boot           ext3    defaults        0       2
+  /dev/scd0       /media/cdrom0   udf,iso9660 user,noauto     0       0
+ +
+ +# 2012/11/27 d-higuchi add
+ +/dev/sdb1 /backup ext4 defaults,relatime 0 0
+ +#
+ root@sandbox:~# 
+
+ root@sandbox:~# mount /backup/
+ root@sandbox:~# 
+
+ root@sandbox:~# df -h /backup 
+ Filesystem      Size  Used Avail Use% Mounted on
+ /dev/sdb1       1.9T   28G  1.8T   2% /backup
+ root@sandbox:~# 
+
+スナップショットの作成。
+
+.. code-block:: console
+
+ root@sandbox:~# lvcreate -s -L 10G -n jenkins-master_snapshot /dev/vg_sandbox/jenkins-master
+ File descriptor 3 (/usr/share/bash-completion/completions) leaked on lvcreate invocation. Parent PID 7397: -su
+   Logical volume "jenkins-master_snapshot" created
+ root@sandbox:~# 
+
+パーティションのマッピング。
+
+.. code-block:: console
+
+ root@sandbox:~# kpartx -av /dev/vg_sandbox/jenkins-master_snapshot 
+ add map vg_sandbox-jenkins--master_snapshot1 (254:5): 0 497664 linear /dev/vg_sandbox/jenkins-master_snapshot 2048
+ add map vg_sandbox-jenkins--master_snapshot2 (254:6): 0 19978240 linear /dev/vg_sandbox/jenkins-master_snapshot 499712
+ root@sandbox:~# 
+
+マウント。
+
+.. code-block:: console
+
+ root@sandbox:~# mount -o ro /dev/mapper/vg_sandbox-jenkins--master_snapshot2 /mnt
+ root@sandbox:~# 
+
+バックアップ。
+
+.. code-block:: console
+
+ root@sandbox:~# rsync -av --delete /mnt/ /backup/jenkins-master
+	:
+	:
+	:
+ sent 4698592884 bytes  received 2370443 bytes  23802345.96 bytes/sec
+ total size is 4689811894  speedup is 1.00
+ root@sandbox:~# 
+
+アンマウント + アンマッピング + スナップショット削除。
+
+.. code-block:: console
+
+ root@sandbox:~# umount /mnt 
+ root@sandbox:~# 
+
+ root@sandbox:~# kpartx -d /dev/vg_sandbox/jenkins-master_snapshot
+ root@sandbox:~# 
+
+ root@sandbox:~# lvremove -vf /dev/vg_sandbox/jenkins-master_snapshot 
+ File descriptor 3 (/usr/share/bash-completion/completions) leaked on lvremove invocation. Parent PID 7397: -su
+    Using logical volume(s) on command line
+    Archiving volume group "vg_sandbox" metadata (seqno 10).
+    Removing snapshot jenkins-master_snapshot
+    Found volume group "vg_sandbox"
+    Found volume group "vg_sandbox"
+    Loading vg_sandbox-jenkins--master table (254:0)
+    Loading vg_sandbox-jenkins--master_snapshot table (254:2)
+  /sbin/dmeventd: stat failed: No such file or directory
+    vg_sandbox/snapshot0 already not monitored.
+    Suspending vg_sandbox-jenkins--master (254:0) with device flush
+    Suspending vg_sandbox-jenkins--master_snapshot (254:2) with device flush
+    Suspending vg_sandbox-jenkins--master-real (254:3) with device flush
+    Suspending vg_sandbox-jenkins--master_snapshot-cow (254:4) with device flush
+    Found volume group "vg_sandbox"
+    Resuming vg_sandbox-jenkins--master_snapshot-cow (254:4)
+    Resuming vg_sandbox-jenkins--master-real (254:3)
+    Resuming vg_sandbox-jenkins--master_snapshot (254:2)
+    Removing vg_sandbox-jenkins--master_snapshot-cow (254:4)
+    Found volume group "vg_sandbox"
+    Resuming vg_sandbox-jenkins--master (254:0)
+    Removing vg_sandbox-jenkins--master-real (254:3)
+    Found volume group "vg_sandbox"
+    Removing vg_sandbox-jenkins--master_snapshot (254:2)
+    Releasing logical volume "jenkins-master_snapshot"
+    Creating volume group backup "/etc/lvm/backup/vg_sandbox" (seqno 12).
+  Logical volume "jenkins-master_snapshot" successfully removed
+ root@sandbox:~# 
+
+LVM バックアップの実設定
+------------------------
+
+.. code-block:: console
+
+ root@sandbox:~# vi /etc/cron.daily/lvm-backup
+ #!/bin/sh
+
+ # 2012/11/27 d-higuchi
+
+ TARGET="jenkins-master redmine"
+
+ for i in $TARGET;do
+	echo
+	echo "----- BEGIN ${i} -----"
+	echo
+
+	# create snapshot
+	lvcreate -s -L 10G -n ${i}_snapshot /dev/vg_sandbox/${i} || exit 1
+	# mapping
+	kpartx -av /dev/vg_sandbox/${i}_snapshot || exit 1
+	# make mount point
+	mkdir -p /snapshot/${i}
+	# mount
+	j=`echo "${i}" | sed -e 's/-/--/'`
+	mount -o ro /dev/mapper/vg_sandbox-${j}_snapshot2 /snapshot/${i} || exit 1
+	# backup
+	rsync -av --delete /snapshot/${i}/ /backup/${i}
+	# umount
+	umount /snapshot/${i}
+	# unmapping
+	kpartx -d /dev/vg_sandbox/${i}_snapshot
+	# remove snapshot
+	lvremove -f /dev/vg_sandbox/${i}_snapshot
+
+	echo
+	echo "----- END ${i} -----"
+	echo
+ done
+
+ exit 0
+
+ # [EOF]
+ root@sandbox:~# 
+
 ..
  [EOF]
