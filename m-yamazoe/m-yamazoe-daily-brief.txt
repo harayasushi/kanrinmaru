@@ -1,17 +1,20 @@
-11/26 daily brief
+11/27 daily brief
 
-- Scalr.jp website translation 
-- Sent Hands-on to Kajikawa and Narita for checking
+- Scalr.jp website translation - concluded
+- Sent Hands-on preparation material to Kajikawa and Narita for checking
+   - checked preparation material, will finish main hands-on by end of today;
+       IDCF API is currently under maintenance, cannot access API
 - Contacted SBI
+   - sent mail, awaiting investment criteria
 - Created test farm 2 in Scalr 
-   - not running for some reason - check up
+   - still not running for some reason - checking up with IDCF
 - Reply from Uniadex
-   - set date for mtg in mid-Dec / nxt year
+   - sent mail, awaiting response
 
 To Do
-- Set up mtg with SBI
-- Set up mtg with Uniadex
+- Set up mtg with SBI - awaiting response
+- Set up mtg with Uniadex - awaiting response 
 - Create Scalr sales presentation / documentation
-- Finetune Scalr hands-on presentation
-- Ensure Scalr works for hands-on
-- Create general sales presentations
+- Finetune Scalr hands-on presentation - to be completed by end of Wednesday
+- Ensure Scalr works for hands-on - does not work (ServiceOfferingID error)
+- Create general sales presentations 11/27 - not done yet
