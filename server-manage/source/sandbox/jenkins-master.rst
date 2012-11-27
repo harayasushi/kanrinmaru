@@ -244,7 +244,7 @@ aliases の設定
   # See man 5 aliases for format
   postmaster:    root
  +# 2012/11/02 d-higuchi add
- +root:	kanrinmaru@creationline.com
+ +root:	solution@creationline.com
  +#
  root@jenkins-master:~# newaliases 
  root@jenkins-master:~# 
@@ -469,7 +469,7 @@ Jenkinsの管理 > プラグインの管理 > 利用可能 > Git Plugin > イン
 		rsync -av --delete /var/lib/jenkins/jobs/chef-traning-p/workspace/build/html/ /var/www/sphinx/chef-training-p
 
 	E-mail通知: on
-	宛先: kanrinmaru@creationline.com
+	宛先: solution@creationline.com
 	不安定ビルドも逐一メールを送信: on
 	ビルドを壊した個人にも別途メールを送信: off
 
@@ -586,6 +586,52 @@ Ubuntu 12.04 LTS の TeXLive は古いので UTF-8 が通らない。
 	texlive-latex-extra=2012.20120611-2 \
 	texlive-pictures=2012.20120611-4 \
 	texlive-fonts-recommended=2012.20120611-4
+
+
+sphinxjp.themes.htmlslide のインストール
+----------------------------------------
+
+https://bitbucket.org/shimizukawa/sphinxjp.themes.htmlslide をインストール。
+
+.. code-block:: console
+
+ ubuntu@jenkins-master:~$ sudo easy_install sphinxjp.themes.htmlslide
+ Searching for sphinxjp.themes.htmlslide
+ Reading http://pypi.python.org/simple/sphinxjp.themes.htmlslide/
+ Reading http://bitbucket.org/shimizukawa/sphinxjp.themes.htmlslide
+ Best match: sphinxjp.themes.htmlslide 0.1.4
+ Downloading http://pypi.python.org/packages/source/s/sphinxjp.themes.htmlslide/sphinxjp.themes.htmlslide-0.1.4.tar.gz#md5=33b9721d6f6406e977348d0c756b867e
+ Processing sphinxjp.themes.htmlslide-0.1.4.tar.gz
+ Running sphinxjp.themes.htmlslide-0.1.4/setup.py -q bdist_egg --dist-dir /tmp/easy_install-Ht84ZR/sphinxjp.themes.htmlslide-0.1.4/egg-dist-tmp-Sq17H7
+ warning: no files found matching '\*.png' under directory 'src'
+ warning: no files found matching '\*.gif' under directory 'src'
+ Adding sphinxjp.themes.htmlslide 0.1.4 to easy-install.pth file
+
+ Installed /usr/local/lib/python2.7/dist-packages/sphinxjp.themes.htmlslide-0.1.4-py2.7.egg
+ Processing dependencies for sphinxjp.themes.htmlslide
+ Searching for sphinxjp.themecore
+ Reading http://pypi.python.org/simple/sphinxjp.themecore/
+ Reading http://bitbucket.org/shimizukawa/sphinxjp.themecore
+ Best match: sphinxjp.themecore 0.1.3
+ Downloading http://pypi.python.org/packages/source/s/sphinxjp.themecore/sphinxjp.themecore-0.1.3.tar.gz#md5=2aea7f9b80cde94e0feca5e79d1d41e6
+ Processing sphinxjp.themecore-0.1.3.tar.gz
+ Running sphinxjp.themecore-0.1.3/setup.py -q bdist_egg --dist-dir /tmp/easy_install-Q3oNet/sphinxjp.themecore-0.1.3/egg-dist-tmp-5iCtbn
+ Adding sphinxjp.themecore 0.1.3 to easy-install.pth file
+
+ Installed /usr/local/lib/python2.7/dist-packages/sphinxjp.themecore-0.1.3-py2.7.egg
+ Finished processing dependencies for sphinxjp.themes.htmlslide
+ ubuntu@jenkins-master:~$ 
+
+インストール完了。
+
+.. code-block:: console
+
+ ubuntu@jenkins-master:~$ ls -l /usr/local/lib/python2.7/dist-packages/
+ 合計 12
+ -rw-r--r-- 1 root staff  266 11月 27 16:10 easy-install.pth
+ drwxr-sr-x 4 root staff 4096 11月 27 16:10 sphinxjp.themecore-0.1.3-py2.7.egg
+ drwxr-sr-x 4 root staff 4096 11月 27 16:10 sphinxjp.themes.htmlslide-0.1.4-py2.7.egg
+ ubuntu@jenkins-master:~$ 
 
 rabbit との連携
 ---------------
