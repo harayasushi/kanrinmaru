@@ -23,6 +23,10 @@
 - virsh dump で QEMU イメージ(起動できるイメージ)が取得できる。
   これにはメモリ、CPUイメージも含まれているので strings や less で
   中身の文字列情報が取れる。つまり、kernel message も取ることができる。
+- http://bugs.debian.org/646063
+  http://kerneltrap.org/mailarchive/linux-netdev/2010/3/8/6271476
+  http://marc.info/?t=126805452400005&r=1&w=2
+- 状況的にどこかから flood を受けているっぽい。
 
 ■kanrinmaru@ 廃止
 * solution@ に宛先変更
@@ -43,5 +47,35 @@
 ■192.168.122.11 (jenkins-master.akb-sb)
 * easy_install
 - sphinxjp.themes.htmlslide のインストール。→一旦アンインストール。
+
+-----------------------------------------------------------------------------
+11/28
+
+■192.168.122.21 (redmine.akb-sb)
+* 運用
+- SE プロジェクトを追加。
+* Chef 管理下に移行。
+- https://github.com/cl-lab-k/cl-redmine
+- include_recipe 'apt' で自動的に apt-get update とかしてくれる。
+- action :nothing 指定で後から notifies を受けたときだけ動く execute。
+- apache2 cookbook には a2ensite,a2dissite などしてくれる Resource があり、
+  それは Definetion 中で定義されてる。これを参考に Redmine のプラグイン
+  インストールを簡単化する Resource を作成した。
+- ブロックの評価が真のときには動作させない not_if do ～ end
+- Debian/Ubuntu には Debconf という仕組みがあって、パッケージインストール時に
+  対話的に設定ができる。ただ自動インストールではこの仕組みがネックになる。
+  それを解決するために preseeding という仕組みがある。mysql cookbook を参照。
+  キーワード: debconf-set-selections, debconf-get-selections, debconf-show
+* プラグインレシピをいくつか作成。
+- plugin_views_revisions
+- xls_export
+- lightbox
+- require_closing_note
+- markdown_extra_formatter
+- restructuredtext_formatter
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* easy_install
+- sphinxjp.themes.htmlslide を再度インストール。
 
 -----------------------------------------------------------------------------
