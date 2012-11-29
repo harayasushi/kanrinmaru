@@ -86,6 +86,7 @@ run_list に追加
 - recipe[chef-client::delete_validation]
 - recipe[logwatch]
 - recipe[postfix]
+- recipe[ntp]
 
 Web UI で行う。
 
@@ -249,147 +250,72 @@ aliases の設定
  root@jenkins-master:~# newaliases 
  root@jenkins-master:~# 
 
+Chef クライアントの設定
+-----------------------
+
+デフォルトでは 443/tcp にアクセスするので変更する。
+
+.. code-block:: console
+
+ root@jenkins-master:~# chef-client
+ [2012-11-14T16:55:40+09:00] INFO: *** Chef 10.16.2 ***
+        :
+        :
+        :
+ [2012-11-14T16:55:41+09:00] FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
+ [2012-11-14T16:55:41+09:00] FATAL: Net::HTTPServerException: 403 "Forbidden"
+ root@jenkins-master:~#
+
+/etc/chef/client.rb の chef_server_url のポートを変更する。
+
+.. code-block:: console
+
+ root@jenkins-master:~# cp -a /etc/chef/client.rb /etc/chef/client.rb.orig
+ root@jenkins-master:~# vi /etc/chef/client.rb
+ root@jenkins-master:~# diff -u /etc/chef/client.rb.orig /etc/chef/client.rb
+ --- /etc/chef/client.rb.orig    2012-11-02 15:23:04.471904434 +0900
+ +++ /etc/chef/client.rb 2012-11-14 16:56:14.208414608 +0900
+ @@ -1,5 +1,5 @@
+  log_level              :info
+  log_location           STDOUT
+ -chef_server_url                "https://219.117.239.177/organizations/kanrinmaru"
+ +chef_server_url                "https://219.117.239.177:8443/organizations/kanrinmaru"
+  validation_key         "/etc/chef/kanrinmaru-validator.pem"
+  validation_client_name "kanrinmaru-validator"
+ root@jenkins-master:~#
+
+アクセスできるようになった。
+
+.. code-block:: console
+
+ root@jenkins-master:~# chef-client
+ [2012-11-14T16:56:33+09:00] INFO: *** Chef 10.16.2 ***
+ [2012-11-14T16:56:33+09:00] INFO: Run List is [recipe[chef-client::delete_validation], recipe[logwatch], recipe[postfix], recipe[apache2], recipe[ntp]]
+        :
+        :
+        :
+ root@jenkins-master:~#
+
 jenkins のインストール
 ----------------------
 
-.. code-block:: console
+https://github.com/cl-lab-k/cl-jenkins
 
- root@jenkins-master:~# aptitude install jenkins
- 以下の新規パッケージがインストールされます:
-   ant{a} ant-optional{a} bsh{a} bsh-gcj{a} ca-certificates-java{a} 
-   default-jre-headless{a} fontconfig{a} fontconfig-config{a} fop{a} 
-   gcj-4.6-base{a} gcj-4.6-jre-lib{a} hicolor-icon-theme{a} 
-   icedtea-6-jre-cacao{a} icedtea-6-jre-jamvm{a} icedtea-netx{a} 
-   icedtea-netx-common{a} java-common{a} java-wrappers{a} jenkins 
-   jenkins-cli{a} jenkins-common{a} junit{a} junit4{a} 
-   libanimal-sniffer-java{a} libapache-pom-java{a} libargs4j-java{a} 
-   libasm3-java{a} libasound2{a} libasyncns0{a} libatk-wrapper-java{a} 
-   libatk-wrapper-java-jni{a} libatk1.0-0{a} libatk1.0-data{a} 
-   libavahi-client3{a} libavahi-common-data{a} libavahi-common3{a} 
-   libavalon-framework-java{a} libbackport-util-concurrent-java{a} 
-   libbatik-java{a} libbsf-java{a} libcairo2{a} libclassworlds-java{a} 
-   libcommons-beanutils-java{a} libcommons-cli-java{a} 
-   libcommons-codec-java{a} libcommons-collections3-java{a} 
-   libcommons-configuration-java{a} libcommons-digester-java{a} 
-   libcommons-httpclient-java{a} libcommons-io-java{a} 
-   libcommons-jexl-java{a} libcommons-jxpath-java{a} libcommons-lang-java{a} 
-   libcommons-logging-java{a} libcommons-net2-java{a} 
-   libcommons-parent-java{a} libcommons-vfs-java{a} libconstantine-java{a} 
-   libcups2{a} libdatrie1{a} libdoxia-java{a} libeasymock-java{a} 
-   libflac8{a} libfontconfig1{a} libfop-java{a} libganymed-ssh2-java{a} 
-   libgcj-bc{a} libgcj-common{a} libgcj12{a} libgdk-pixbuf2.0-0{a} 
-   libgdk-pixbuf2.0-common{a} libgif4{a} libgoogle-collections-java{a} 
-   libgtk2.0-0{a} libgtk2.0-bin{a} libgtk2.0-common{a} libhamcrest-java{a} 
-   libhttpclient-java{a} libhttpcore-java{a} libice6{a} libitext1-java{a} 
-   libjaffl-java{a} libjasper1{a} libjaxp1.3-java{a} 
-   libjenkins-remoting-java{a} libjetty-java{a} libjffi-java{a} 
-   libjffi-jni{a} libjline-java{a} libjna-java{a} libjnr-posix-java{a} 
-   libjpeg-turbo8{a} libjpeg8{a} libjsch-java{a} libjson0{a} 
-   libjsoup-java{a} libjsr305-java{a} liblog4j1.2-java{a} 
-   libmaven-common-artifact-filters-java{a} libmaven-dependency-tree-java{a} 
-   libmaven-enforcer-plugin-java{a} libmaven-invoker-java{a} 
-   libmaven-plugin-testing-java{a} libmaven-scm-java{a} 
-   libmaven2-core-java{a} libmodello-java{a} libnetbeans-cvsclient-java{a} 
-   libnspr4{a} libnss3{a} libnss3-1d{a} libogg0{a} libpango1.0-0{a} 
-   libpixman-1-0{a} libplexus-ant-factory-java{a} libplexus-archiver-java{a} 
-   libplexus-bsh-factory-java{a} libplexus-build-api-java{a} 
-   libplexus-cipher-java{a} libplexus-classworlds-java{a} 
-   libplexus-container-default-java{a} libplexus-containers-java{a} 
-   libplexus-i18n-java{a} libplexus-interactivity-api-java{a} 
-   libplexus-interpolation-java{a} libplexus-io-java{a} 
-   libplexus-sec-dispatcher-java{a} libplexus-utils-java{a} libpulse0{a} 
-   libregexp-java{a} librhino-java{a} libsaxon-java{a} libservlet2.5-java{a} 
-   libslf4j-java{a} libsm6{a} libsndfile1{a} libthai-data{a} libthai0{a} 
-   libtiff4{a} libvorbis0a{a} libvorbisenc2{a} libwagon-java{a} 
-   libxalan2-java{a} libxbean-java{a} libxcb-render0{a} libxcb-shm0{a} 
-   libxcomposite1{a} libxcursor1{a} libxdamage1{a} libxerces2-java{a} 
-   libxfixes3{a} libxft2{a} libxi6{a} libxinerama1{a} 
-   libxml-commons-external-java{a} libxml-commons-resolver1.1-java{a} 
-   libxmlgraphics-commons-java{a} libxrandr2{a} libxrender1{a} libxt6{a} 
-   libxtst6{a} openjdk-6-jre{a} openjdk-6-jre-headless{a} 
-   openjdk-6-jre-lib{a} rhino{a} shared-mime-info{a} ttf-dejavu-core{a} 
-   ttf-dejavu-extra{a} tzdata-java{a} unzip{a} x11-common{a} 
- 0 個のパッケージを更新、 170 個を新たにインストール、 0 個を削除予定、0 個が更新されていない。
- 148 M バイトのアーカイブを取得する必要があります。 展開後に 301 M バイトのディスク領域が新たに消費されます。
- 先に進みますか? [Y/n/?] y
- 	:
- 	:
- 	:
- jenkins (1.424.6+dfsg-1ubuntu0.1) を設定しています ...
- jenkins start/running, process 14445
- 	:
- 	:
- 	:
- ldconfig deferred processing now taking place
-                                          
- root@jenkins-master:~# 
+- recipe[apache2]
+- recipe[cl-jenkins]
+- recipe[cl-jenkins::sphinx]
+- recipe[cl-jenkins::texlive]
+- recipe[cl-jenkins::rabbit]
 
-.. code-block:: console
-
- root@jenkins-master:~# ps auxwwwf | grep '[ j]enkins'
- jenkins  14445  7.3  1.2 4307948 102572 ?      Ssl  15:34   0:04 /usr/bin/java -jar /usr/share/jenkins/jenkins.war --webroot=/var/run/jenkins/war --httpPort=8080 --ajp13Port=-1 --preferredClassLoader=java.net.URLClassLoader --logfile=/var/log/jenkins/jenkins.log
- root@jenkins-master:~# 
-
-Jenkinsの設定変更
------------------
+jenkins 設定メモ
+----------------
 
 Jenkins + bitbucket.org で Sphinx で作られた Web サイトを自動公開する
 http://d.hatena.ne.jp/tk0miya/20111212/p2
 
-.. code-block:: console
-
- root@jenkins-master:~# cp -a /etc/default/jenkins /etc/default/jenkins.2012-1102
- root@jenkins-master:~# vi /etc/default/jenkins
- root@jenkins-master:~# diff -u /etc/default/jenkins.2012-1102 /etc/default/jenkins
- --- /etc/default/jenkins.2012-1102	2012-03-27 19:40:15.000000000 +0900
- +++ /etc/default/jenkins	2012-11-02 15:58:41.763901017 +0900
- @@ -55,4 +55,7 @@
-  # --argumentsRealm.passwd.$ADMIN_USER=[password]
-  # --argumentsRealm.$ADMIN_USER=admin
-  # --webroot=~/.jenkins/war
- -JENKINS_ARGS="--webroot=$JENKINS_RUN/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT --preferredClassLoader=java.net.URLClassLoader"
- +# 2012/11/02 d-higuchi add --prefix=/jenkins
- +#JENKINS_ARGS="--webroot=$JENKINS_RUN/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT --preferredClassLoader=java.net.URLClassLoader"
- +JENKINS_ARGS="--webroot=$JENKINS_RUN/war --httpPort=$HTTP_PORT --ajp13Port=$AJP_PORT --preferredClassLoader=java.net.URLClassLoader --prefix=/jenkins"
- +#
- root@jenkins-master:~# 
-
-.. code-block:: console
-
- root@jenkins-master:~# /etc/init.d/jenkins restart
- jenkins stop/waiting
- jenkins start/running, process 15758
- root@jenkins-master:~# 
-
-sphinx との連携
----------------
-
-.. code-block:: console
-
- root@jenkins-master:~# aptitude install python-sphinx
- 以下の新規パッケージがインストールされます:
-   docutils-common{a} docutils-doc{a} libjs-sphinxdoc{a} libjs-underscore{a} 
-   liblcms1{a} libpaper-utils{a} libpaper1{a} libxslt1.1{a} 
-   python-docutils{a} python-imaging{a} python-jinja2{a} python-lxml{a} 
-   python-markupsafe{a} python-pygments{a} python-roman{a} python-sphinx 
-   sphinx-common{a} sphinx-doc{a} 
- 0 個のパッケージを更新、 18 個を新たにインストール、 0 個を削除予定、1 個が更新されていない。
- 5,260 k バイトのアーカイブを取得する必要があります。 展開後に 19.0 M バイトのディスク領域が新たに消費されます。
- 先に進みますか? [Y/n/?] y
- 	:
- 	:
- 	:
- ldconfig deferred processing now taking place
-                                          
- root@jenkins-master:~# 
-
-chef レシピ recipe[apache2] を web UI で追加。
-
-.. code-block:: console
-
- root@jenkins-master:~# mkdir /var/www/sphinx
- root@jenkins-master:~# chown jenkins.jenkins /var/www/sphinx
- root@jenkins-master:~# 
+Ubuntu 12.04 の TeXLive は古いので UTF-8 が通らず、日本語 PDF が生成できない。
+そのため Ubuntu 12.10 から TeXLive を借りてくる(APT-Pinning)。
+もしかしたら Ubuntu 12.10 に完全に上げてしまったほうがいいのかも？
 
 bitbucket.org との連携
 ----------------------
@@ -472,197 +398,6 @@ Jenkinsの管理 > プラグインの管理 > 利用可能 > Git Plugin > イン
 	宛先: solution@creationline.com
 	不安定ビルドも逐一メールを送信: on
 	ビルドを壊した個人にも別途メールを送信: off
-
-NTP の設定
-----------
-
-run_list に以下を追加するだけでOK
-
-- recipe[ntp]
-
-Chef クライアントの設定
------------------------
-
-デフォルトでは 443/tcp にアクセスするので変更する。
-
-.. code-block:: console
-
- root@jenkins-master:~# chef-client
- [2012-11-14T16:55:40+09:00] INFO: *** Chef 10.16.2 ***
-        :
-        :
-        :
- [2012-11-14T16:55:41+09:00] FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out
- [2012-11-14T16:55:41+09:00] FATAL: Net::HTTPServerException: 403 "Forbidden"
- root@jenkins-master:~#
-
-/etc/chef/client.rb の chef_server_url のポートを変更する。
-
-.. code-block:: console
-
- root@jenkins-master:~# cp -a /etc/chef/client.rb /etc/chef/client.rb.orig
- root@jenkins-master:~# vi /etc/chef/client.rb
- root@jenkins-master:~# diff -u /etc/chef/client.rb.orig /etc/chef/client.rb
- --- /etc/chef/client.rb.orig    2012-11-02 15:23:04.471904434 +0900
- +++ /etc/chef/client.rb 2012-11-14 16:56:14.208414608 +0900
- @@ -1,5 +1,5 @@
-  log_level              :info
-  log_location           STDOUT
- -chef_server_url                "https://219.117.239.177/organizations/kanrinmaru"
- +chef_server_url                "https://219.117.239.177:8443/organizations/kanrinmaru"
-  validation_key         "/etc/chef/kanrinmaru-validator.pem"
-  validation_client_name "kanrinmaru-validator"
- root@jenkins-master:~#
-
-アクセスできるようになった。
-
-.. code-block:: console
-
- root@jenkins-master:~# chef-client
- [2012-11-14T16:56:33+09:00] INFO: *** Chef 10.16.2 ***
- [2012-11-14T16:56:33+09:00] INFO: Run List is [recipe[chef-client::delete_validation], recipe[logwatch], recipe[postfix], recipe[apache2], recipe[ntp]]
-        :
-        :
-        :
- root@jenkins-master:~#
-
-sphinx で PDF を生成するための TeXLive のインストール
------------------------------------------------------
-
-Ubuntu 12.04 LTS の TeXLive は古いので UTF-8 が通らない。
-そのため Ubuntu 12.10 から TeXLive を借りてくる(APT-Pinning)。
-もしかしたら Ubuntu 12.10 に完全に上げてしまったほうがいいのかも？
-
-.. code-block:: console
-
- root@jenkins-master:~# cat > /etc/apt/apt.conf.d/01ubuntu
- # 2012/11/20 d-higuchi add
- # https://help.ubuntu.com/community/PinningHowto
- APT::Default-Release "precise";
- root@jenkins-master:~# 
-
-.. code-block:: console
-
- root@jenkins-master:~# cat /etc/apt/sources.list.d/quantal.list 
- # 2012/11/20 d-higuchi add
- deb http://jp.archive.ubuntu.com/ubuntu/ quantal main restricted
- deb http://jp.archive.ubuntu.com/ubuntu/ quantal-updates main restricted
- deb http://jp.archive.ubuntu.com/ubuntu/ quantal universe
- deb http://jp.archive.ubuntu.com/ubuntu/ quantal-updates universe
- deb http://jp.archive.ubuntu.com/ubuntu/ quantal multiverse
- deb http://jp.archive.ubuntu.com/ubuntu/ quantal-updates multiverse
- deb http://jp.archive.ubuntu.com/ubuntu/ quantal-backports main restricted universe multiverse
- deb http://security.ubuntu.com/ubuntu quantal-security main restricted
- deb http://security.ubuntu.com/ubuntu quantal-security universe
- deb http://security.ubuntu.com/ubuntu quantal-security multiverse
- root@jenkins-master:~# 
-
-.. code-block:: console
-
- root@jenkins-master:~# apt-get install \
-	texlive-lang-cjk=2012.20120611-2 \
-	ruby \
-	texlive-base=2012.20120611-4 \
-	texlive-doc-base=2012.20120611-1 \
-	texlive-binaries=2012.20120628-3build1 \
-	texlive-common=2012.20120611-4 \
-	latex-cjk-common=4.8.3+git20120621-1 \
-	latex-cjk-xcjk=4.8.2+git20111216-1 \
-	latex-cjk-chinese=4.8.3+git20120621-1 \
-	latex-cjk-japanese=4.8.3+git20120621-1 \
-	tex-common=3.13 \
-	texlive-latex-base=2012.20120611-4 \
-	texlive-font-utils=2012.20120611-2 \
-	libfontconfig1=2.10.1-0ubuntu3 \
-	libpoppler28=0.20.4-0ubuntu1 \
-	texlive-xetex=2012.20120611-4 \
-	texlive-doc-zh=2012.20120611-1 \
-	libtiff5=4.0.2-1ubuntu2.1 \
-	liblzma5=5.1.1alpha+20120614-1 \
-	fontconfig-config=2.10.1-0ubuntu3 \
-	tipa=2:1.3-19 \
-	poppler-data=0.4.5-10 \
-	texlive-latex-recommended=2012.20120611-4 \
-	texlive-latex-extra=2012.20120611-2 \
-	texlive-pictures=2012.20120611-4 \
-	texlive-fonts-recommended=2012.20120611-4
-
-
-sphinxjp.themes.htmlslide のインストール
-----------------------------------------
-
-https://bitbucket.org/shimizukawa/sphinxjp.themes.htmlslide をインストール。
-
-.. code-block:: console
-
- ubuntu@jenkins-master:~$ sudo easy_install sphinxjp.themes.htmlslide
- Searching for sphinxjp.themes.htmlslide
- Reading http://pypi.python.org/simple/sphinxjp.themes.htmlslide/
- Reading http://bitbucket.org/shimizukawa/sphinxjp.themes.htmlslide
- Best match: sphinxjp.themes.htmlslide 0.1.4
- Downloading http://pypi.python.org/packages/source/s/sphinxjp.themes.htmlslide/sphinxjp.themes.htmlslide-0.1.4.tar.gz#md5=33b9721d6f6406e977348d0c756b867e
- Processing sphinxjp.themes.htmlslide-0.1.4.tar.gz
- Running sphinxjp.themes.htmlslide-0.1.4/setup.py -q bdist_egg --dist-dir /tmp/easy_install-Ht84ZR/sphinxjp.themes.htmlslide-0.1.4/egg-dist-tmp-Sq17H7
- warning: no files found matching '\*.png' under directory 'src'
- warning: no files found matching '\*.gif' under directory 'src'
- Adding sphinxjp.themes.htmlslide 0.1.4 to easy-install.pth file
-
- Installed /usr/local/lib/python2.7/dist-packages/sphinxjp.themes.htmlslide-0.1.4-py2.7.egg
- Processing dependencies for sphinxjp.themes.htmlslide
- Searching for sphinxjp.themecore
- Reading http://pypi.python.org/simple/sphinxjp.themecore/
- Reading http://bitbucket.org/shimizukawa/sphinxjp.themecore
- Best match: sphinxjp.themecore 0.1.3
- Downloading http://pypi.python.org/packages/source/s/sphinxjp.themecore/sphinxjp.themecore-0.1.3.tar.gz#md5=2aea7f9b80cde94e0feca5e79d1d41e6
- Processing sphinxjp.themecore-0.1.3.tar.gz
- Running sphinxjp.themecore-0.1.3/setup.py -q bdist_egg --dist-dir /tmp/easy_install-Q3oNet/sphinxjp.themecore-0.1.3/egg-dist-tmp-5iCtbn
- Adding sphinxjp.themecore 0.1.3 to easy-install.pth file
-
- Installed /usr/local/lib/python2.7/dist-packages/sphinxjp.themecore-0.1.3-py2.7.egg
- Finished processing dependencies for sphinxjp.themes.htmlslide
- ubuntu@jenkins-master:~$ 
-
-インストール完了。
-
-.. code-block:: console
-
- ubuntu@jenkins-master:~$ ls -l /usr/local/lib/python2.7/dist-packages/
- 合計 12
- -rw-r--r-- 1 root staff  266 11月 27 16:10 easy-install.pth
- drwxr-sr-x 4 root staff 4096 11月 27 16:10 sphinxjp.themecore-0.1.3-py2.7.egg
- drwxr-sr-x 4 root staff 4096 11月 27 16:10 sphinxjp.themes.htmlslide-0.1.4-py2.7.egg
- ubuntu@jenkins-master:~$ 
-
-rabbit との連携
----------------
-
-rabbit が必要とするソフトウェアのインストール。
-
-.. code-block:: console
-
- root@jenkins-master:~# apt-get install ruby1.9.1 ruby1.9.1-dev \
-	libcairo2-dev libfontconfig1-dev=2.10.1-0ubuntu3 \
-	libxml2-dev libxslt1-dev \
-	python-blockdiag \
-	enscript
-	:
-	:
-	:
-
-.. code-block:: console
-
- root@jenkins-master:~# gem1.9.1 install rabbit --no-rdoc --no-ri
-	:
-	:
-	:
-
-ファイル置き場の作成。
-
-.. code-block:: console
-
- root@jenkins-master:~# mkdir /var/www/rabbit
- root@jenkins-master:~# chown jenkins.jenkins /var/www/rabbit
- root@jenkins-master:~#
 
 ..
  [EOF]
