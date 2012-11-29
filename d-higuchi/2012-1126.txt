@@ -79,3 +79,22 @@
 - sphinxjp.themes.htmlslide を再度インストール。
 
 -----------------------------------------------------------------------------
+11/29
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* Chef 管理下に移行。
+- https://github.com/cl-lab-k/cl-jenkins
+
+■219.117.239.188 (sandbox)
+* Chef 管理下に移行。
+- https://github.com/cl-lab-k/cl-reverse-proxy
+- LVM の部分はどうする？バックアップ設定だけする？
+
+■192.168.122.11 (jenkins-master.akb-sb)
+■192.168.122.21 (redmine.akb-sb)
+■219.117.239.188 (sandbox)
+* 共通箇所を Chef 管理下に移行。
+- https://github.com/cl-lab-k/cl-etc-common
+- PrimeDrive /咸臨丸@(uemura)/cl-chef-priv.sh
+
+-----------------------------------------------------------------------------
