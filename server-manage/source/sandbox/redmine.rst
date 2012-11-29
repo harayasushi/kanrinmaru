@@ -240,16 +240,11 @@ https://github.com/cl-lab-k/cl-redmine
 - recipe[cl-redmine]
 - recipe[cl-redmine::plugin_views_revisions]
 - recipe[cl-redmine::xls_export]
-
-また、
-
-Plugin views revisions
-http://www.redmine.org/plugins/redmine_plugin_views_revisions
-
-XLS Export
-http://www.redmine.org/plugins/redmine_xls_export
-
-を追加でインストールしている。
+- recipe[cl-redmine::markdown_extra_formatter]
+- recipe[cl-redmine::restructuredtext_formatter]
+- recipe[cl-redmine::require_closing_note]
+- recipe[cl-redmine::lightbox]
+- recipe[cl-redmine::send_reminders]
 
 redmine 設定メモ
 ----------------
