@@ -24,50 +24,11 @@ run_list に追加
 - recipe[logwatch]
 - recipe[postfix]
 - recipe[ntp]
+- recipe[cl-etc-common::aliases]
+- recipe[cl-etc-common::hostname]
+- recipe[cl-etc-common::hosts-access]
 
 Web UI で行う。
-
-/etc/hosts.{allow,deny} の設定
-------------------------------
-
-.. code-block:: console
-
- root@sandbox:~# cp -a /etc/hosts.allow /etc/hosts.allow.2012-1101
- root@sandbox:~# vi /etc/hosts.allow
- root@sandbox:~# diff -u /etc/hosts.allow.2012-1101 /etc/hosts.allow
- --- /etc/hosts.allow.2012-1101	2012-11-01 18:05:51.000000000 +0900
- +++ /etc/hosts.allow	2012-11-01 19:07:51.000000000 +0900
- @@ -11,3 +11,9 @@
-  # for further information.
-  #
-  
- +# 2012/11/01 d-higuchi add
- +sshd: localhost
- +sshd: 219.117.239.160/255.255.255.224
- +sshd: 192.168.10.0/255.255.255.0
- +sshd: .tyma.nt.ftth4.ppp.infoweb.ne.jp
- +#
- root@sandbox:~# 
-
-.. code-block:: console
-
- root@sandbox:~# cp -a /etc/hosts.deny /etc/hosts.deny.2012-1101
- root@sandbox:~# vi /etc/hosts.deny
- root@sandbox:~# diff -u /etc/hosts.deny.2012-1101 /etc/hosts.deny
- --- /etc/hosts.deny.2012-1101	2012-11-01 18:05:51.000000000 +0900
- +++ /etc/hosts.deny	2012-11-01 19:08:43.000000000 +0900
- @@ -18,3 +18,6 @@
-  # versions of Debian this has been the default.
-  # ALL: PARANOID
-  
- +# 2012/11/01 d-higuchi add
- +sshd: ALL
- +#
- root@sandbox:~# 
-
-.. note::
-
- cookbook 管理が望ましい(TODO: 2012/11/05)
 
 LVM の設定
 ----------
