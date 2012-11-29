@@ -230,73 +230,31 @@ aliases の設定
  root@redmine:~# newaliases 
  root@redmine:~# 
 
-mysql::server のインストール
-----------------------------
-
-redmine のバックエンドを MySQL にするので run_list に追加。
-
-- recipe[mysql::server]
-
-.. code-block:: console
-
- root@redmine:~# chef-client 
- [2012-11-19T15:43:20+09:00] INFO: *** Chef 10.16.2 ***
- [2012-11-19T15:43:20+09:00] INFO: Run List is [recipe[chef-client::delete_validation], recipe[ntp], recipe[logwatch], recipe[postfix], recipe[mysql::server]]
- [2012-11-19T15:43:20+09:00] INFO: Run List expands to [chef-client::delete_validation, ntp, logwatch, postfix, mysql::server]
- [2012-11-19T15:43:20+09:00] INFO: Starting Chef Run for redmine.akb-sb.creationline.com
- [2012-11-19T15:43:20+09:00] INFO: Running start handlers
- [2012-11-19T15:43:20+09:00] INFO: Start handlers complete.
- [2012-11-19T15:43:21+09:00] INFO: Loading cookbooks [build-essential, chef-client, logwatch, mysql, ntp, openssl, perl, postfix]
-	:
-	:
-	:
- [2012-11-19T15:43:52+09:00] INFO: Chef Run complete in 32.166642909 seconds
- [2012-11-19T15:43:52+09:00] INFO: Running report handlers
- [2012-11-19T15:43:52+09:00] INFO: Report handlers complete
- root@redmine:~# 
-
-MySQL の root パスワードは
-
-- /etc/mysql/grants.sql 
-- /var/cache/local/preseeding/mysql-server.seed
-
-に保存される。
-
 redmine のインストール
 ----------------------
 
-.. code-block:: console
+バックエンドをローカルの MySQL、フロントエンドをローカルの apache2 とした redmine をインストールする。
 
- root@redmine:~# apt-get install redmine redmine-mysql
- パッケージリストを読み込んでいます... 完了
- 依存関係ツリーを作成しています                
- 状態情報を読み取っています... 完了
- 以下の特別パッケージがインストールされます:
-   dbconfig-common libjs-prototype libjs-scriptaculous libmemcache-client-ruby
-   libmemcache-client-ruby1.8 libmysql-ruby libreadline5 libruby1.8
-   libtzinfo-ruby libtzinfo-ruby1.8 rake ruby ruby-actionmailer-2.3
-   ruby-actionpack-2.3 ruby-activerecord-2.3 ruby-activeresource-2.3
-   ruby-activesupport-2.3 ruby-blankslate ruby-builder ruby-coderay ruby-i18n
-   ruby-mysql ruby-net-ldap ruby-rack ruby-rails-2.3 ruby-rchardet
-   ruby-text-format ruby-tmail ruby1.8 ruby1.8-dev rubygems unzip zip
- 提案パッケージ:
-   libsvn-ruby ruby-rmagick libopenid-ruby ri ruby-dev ruby1.8-examples ri1.8
- 以下のパッケージが新たにインストールされます:
-   dbconfig-common libjs-prototype libjs-scriptaculous libmemcache-client-ruby
-   libmemcache-client-ruby1.8 libmysql-ruby libreadline5 libruby1.8
-   libtzinfo-ruby libtzinfo-ruby1.8 rake redmine redmine-mysql ruby
-   ruby-actionmailer-2.3 ruby-actionpack-2.3 ruby-activerecord-2.3
-   ruby-activeresource-2.3 ruby-activesupport-2.3 ruby-blankslate ruby-builder
-   ruby-coderay ruby-i18n ruby-mysql ruby-net-ldap ruby-rack ruby-rails-2.3
-   ruby-rchardet ruby-text-format ruby-tmail ruby1.8 ruby1.8-dev rubygems unzip
-   zip
- アップグレード: 0 個、新規インストール: 35 個、削除: 0 個、保留: 0 個。
- 9,933 kB 中 0 B のアーカイブを取得する必要があります。
- この操作後に追加で 40.1 MB のディスク容量が消費されます。
- 続行しますか [Y/n]? y
-	:
-	:
-	:
+https://github.com/cl-lab-k/cl-redmine
+
+- recipe[cl-redmine]
+- recipe[cl-redmine::plugin_views_revisions]
+- recipe[cl-redmine::xls_export]
+
+また、
+
+Plugin views revisions
+http://www.redmine.org/plugins/redmine_plugin_views_revisions
+
+XLS Export
+http://www.redmine.org/plugins/redmine_xls_export
+
+を追加でインストールしている。
+
+redmine 設定メモ
+----------------
+
+Debconf の事前設定(preceeding)では以下が行われる。
 
 - redmine/instances/default のデータベースを dbconfig-common で設定しますか？
 	- [はい]
@@ -307,209 +265,8 @@ redmine のインストール
 - redmine/instances/default 用の MySQL アプリケーションパスワード
 	- [空白でランダムパスワードを生成する]
 
-redmine の設定
---------------
-
 メール通知のためのconfiguration.ymlの設定
 http://redmine.jp/faq/general/mail_notification/
-
-.. code-block:: console
-
- root@redmine:~# vi /etc/redmine/default/configuration.yml
- default:
-   email_delivery:
-     delivery_method: :smtp
-     smtp_settings:
-       address: localhost
-       port: 25
-       domain: creationline.com
- root@redmine:~# chown root.www-data /etc/redmine/default/configuration.yml
- root@redmine:~# chmod 640 /etc/redmine/default/configuration.yml
- root@redmine:~# 
-
-SCM 各種コマンドのインストール
-
-.. code-block:: console
-
- root@redmine:~# apt-get install subversion darcs mercurial cvs bzr git 
-	:
-	:
-	:
-
-apache2 のインストール
-----------------------
-
-redmine のフロントエンドを apache2 にするので run_list に追加。
-
-- recipe[apache2]
-
-.. code-block:: console
-
- root@redmine:~# chef-client 
- [2012-11-19T16:01:43+09:00] INFO: *** Chef 10.16.2 ***
- [2012-11-19T16:01:43+09:00] INFO: Run List is [recipe[chef-client::delete_validation], recipe[ntp], recipe[logwatch], recipe[postfix], recipe[mysql::server], recipe[apache2]]
-	:
-	:
-	:
- [2012-11-19T16:01:59+09:00] INFO: Chef Run complete in 16.217573057 seconds
- [2012-11-19T16:01:59+09:00] INFO: Running report handlers
- [2012-11-19T16:01:59+09:00] INFO: Report handlers complete
- root@redmine:~# 
-
-apt で libapache2-mod-passenger をインストール。
-
-.. code-block:: console
-
- root@redmine:~# apt-get install libapache2-mod-passenger
- パッケージリストを読み込んでいます... 完了
- 依存関係ツリーを作成しています                
- 状態情報を読み取っています... 完了
- 提案パッケージ:
-   rails passenger-doc
- 以下のパッケージが新たにインストールされます:
-   libapache2-mod-passenger
- アップグレード: 0 個、新規インストール: 1 個、削除: 0 個、保留: 0 個。
- 394 kB のアーカイブを取得する必要があります。
- この操作後に追加で 1,663 kB のディスク容量が消費されます。
-	:
-	:
-	:
- * Reloading web server config apache2                                   [ OK ] 
- root@redmine:~# 
-
-redmine と apache2 の連携
--------------------------
-
-.. code-block:: console
-
- root@redmine:~# ln -s /usr/share/redmine/public /var/www/redmine
- root@redmine:~# 
-
-.. code-block:: console
-
- root@redmine:~# cat > /etc/apache2/sites-available/redmine
- <VirtualHost \*:80>
-         DocumentRoot /var/www/
-         <Directory />
-                 Options FollowSymLinks
-                 AllowOverride None
-         </Directory>
-         <Directory /var/www/>
-                 Options Indexes FollowSymLinks MultiViews
-                 AllowOverride None
-		RailsBaseURI /redmine
-        </Directory>
- </VirtualHost>
- root@redmine:~# 
-
-.. code-block:: console
-
- root@redmine:~# a2ensite redmine
- Enabling site redmine.
- To activate the new configuration, you need to run:
-   service apache2 reload
- root@redmine:~# a2dissite default
- Site default disabled.
- To activate the new configuration, you need to run:
-   service apache2 reload
- root@redmine:~# 
-
- root@redmine:~# /etc/init.d/apache2 reload
-  * Reloading web server config apache2                                   [ OK ] 
- root@redmine:~#
-
-redmine プラグインインストール
-------------------------------
-
-XLS Export プラグイン
-http://www.redmine.org/plugins/redmine_xls_export
-
-必要な RubyGems をインストール。
-
-.. code-block:: console
-
- root@redmine:~# gem install spreadsheet rubyzip --no-rdoc --no-ri
- Fetching: ruby-ole-1.2.11.5.gem (100%)
- Fetching: spreadsheet-0.7.4.gem (100%)
- Successfully installed ruby-ole-1.2.11.5
- Successfully installed spreadsheet-0.7.4
- Fetching: rubyzip-0.9.9.gem (100%) 
- Successfully installed rubyzip-0.9.9
- 3 gems installed
- root@redmine:~# 
-
-プラグインアーカイブをダウンロード
-
-.. code-block:: console
-
- ubuntu@redmine:~$ wget http://www.redmine.org/attachments/download/7705/redmine_plugin_views_revisions_v001.zip http://www.redmine.org/attachments/download/7854/redmine_xls_export_v021.zip
- --2012-11-22 18:52:02--  http://www.redmine.org/attachments/download/7705/redmine_plugin_views_revisions_v001.zip
- www.redmine.org (www.redmine.org) をDNSに問いあわせています... 46.4.36.71
- www.redmine.org (www.redmine.org)|46.4.36.71|:80 に接続しています... 接続しました。
- HTTP による接続要求を送信しました、応答を待っています... 200 OK
- 長さ: 特定できません [application/x-zip-compressed]
- `redmine_plugin_views_revisions_v001.zip' に保存中
-
-    [   <=>                                 ] 14,702      26.1K/s   時間 0.6s
-
- 2012-11-22 18:52:03 (26.1 KB/s) - `redmine_plugin_views_revisions_v001.zip' へ保存終了 [14702]
-
- --2012-11-22 18:52:03--  http://www.redmine.org/attachments/download/7854/redmine_xls_export_v021.zip
- www.redmine.org:80 への接続を再利用します。
- HTTP による接続要求を送信しました、応答を待っています... 200 OK
- 長さ: 特定できません [application/x-zip-compressed]
- `redmine_xls_export_v021.zip' に保存中
-
-    [   <=>                                 ] 31,603      56.0K/s   時間 0.6s
-
- 2012-11-22 18:52:04 (56.0 KB/s) - `redmine_xls_export_v021.zip' へ保存終了 [31603]
-
- FINISHED --2012-11-22 18:52:04--
- Total wall clock time: 2.0s
- Downloaded: 2 files, 45K in 1.1s (41.0 KB/s)
- ubuntu@redmine:~$
-
-インストール先プラグインディレクトリに移動し、アーカイブを展開する。
-
-.. code-block:: console
-
- root@redmine:~# cd /usr/share/redmine/vendor/plugins/
- root@redmine:/usr/share/redmine/vendor/plugins# unzip -q /home/ubuntu/redmine_plugin_views_revisions_v001.zip
- root@redmine:/usr/share/redmine/vendor/plugins# unzip -q /home/ubuntu/redmine_xls_export_v021.zip
- root@redmine:/usr/share/redmine/vendor/plugins#
-
- root@redmine:/usr/share/redmine/vendor/plugins# ls -ld redmine_*
- drwxr-xr-x 4 root root 4096  6月  6 20:27 redmine_plugin_views_revisions
- drwxr-xr-x 7 root root 4096  6月 26 17:11 redmine_xls_export
- root@redmine:/usr/share/redmine/vendor/plugins#
-
-rake を実行して redmine に反映させる。
-
-.. code-block:: console
-
- root@redmine:/usr/share/redmine# rake redmine:plugins:process_version_change RAILS_ENV=production
-	:
-	:
-	:
- Please install RDoc 2.4.2+ to generate documentation.
- Redmine version: 1.3.2
- Redmine revision: unknown
- ---------- Updating revisions.... ----------
- -------- processing plugin redmine_xls_export
-    Removing obsolete file /app/views/issues/xls_export_action.rhtml
-    Using version 1.3.0 for file /app/views/xls_export/index.html.erb
- -------- processing plugin redmine_plugin_views_revisions
- Done
- root@redmine:/usr/share/redmine#
-
-apache2 を再起動する。
-
-.. code-block:: console
-
- root@redmine:/usr/share/redmine# /etc/init.d/apache2 restart
-  * Restarting web server apache2
-  ... waiting    ...done.
- root@redmine:/usr/share/redmine#
 
 redmine のユーザ登録
 --------------------
