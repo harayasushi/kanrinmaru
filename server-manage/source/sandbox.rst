@@ -30,6 +30,29 @@ run_list に追加
 
 Web UI で行う。
 
+apache2 のインストールとリバースプロキシ設定
+--------------------------------------------
+
+- recipe[cl-reverse-proxy]
+
+Web UI で run_list に追加。
+
+なお、htpasswd ファイルは Cookbook では作成しない。
+
+.. code-block:: console
+
+ root@sandbox:~# htpasswd -c /etc/apache2/htpasswd.jenkins-master jenkins
+ New password: 
+ Re-type new password: 
+ Adding password for user jenkins
+ root@sandbox:~#
+
+ root@sandbox:~# htpasswd -c /etc/apache2/htpasswd.redmine redmine
+ New password: 
+ Re-type new password: 
+ Adding password for user redmine
+ root@sandbox:~# 
+
 LVM の設定
 ----------
 
@@ -179,228 +202,6 @@ Target Path: /dev/vg_sandbox
 Source Path: /dev/sda3
 
 右下の New Volume で、KVM ゲストから利用できる LV を作成できる。
-
-apache2 のインストールと初期設定
---------------------------------
-
-- recipe[apache2]
-- recipe[apache2::mod_proxy]
-- recipe[apache2::mod_proxy_http]
-
-Web UI で run_list に追加。
-
-.. code-block:: console
-
- root@sandbox:~# /etc/init.d/chef-client restart
- [ ok ] Restarting chef-client: chef-client.
- root@sandbox:~#
-
-jenkins-master に接続するための apache2 の設定
-----------------------------------------------
-
-Jenkins + bitbucket.org で Sphinx で作られた Web サイトを自動公開する
-http://d.hatena.ne.jp/tk0miya/20111212/p2
-
-.. code-block:: console
-
- root@sandbox:~# cat > /etc/apache2/sites-available/jenkins-master
- # 2012/11/02 d-higuchi
- 
- ProxyRequests           Off
- ProxyPass               /jenkins        http://192.168.122.11:8080/jenkins
- ProxyPassReverse        /jenkins        http://192.168.122.11:8080/jenkins
- 
- <Location /jenkins>
-         order deny,allow
-         deny from all
-         allow from localhost
-         allow from 219.117.239.160/255.255.255.224
-         allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
-         AuthUserFile    /etc/apache2/htpasswd.jenkins-master
-         AuthName        jenkins-master
-         AuthType        Basic
-         Require         valid-user
- </Location>
- root@sandbox:~# 
-
-.. code-block:: console
-
- root@sandbox:~# ls -l /etc/apache2/sites-*/jenkins-master
- -rw-r--r-- 1 root root 407 Nov  2 15:46 /etc/apache2/sites-available/jenkins-master
- root@sandbox:~# a2ensite jenkins-master
- Enabling site jenkins-master.
- To activate the new configuration, you need to run:
-   service apache2 reload
- root@sandbox:~# ls -l /etc/apache2/sites-*/jenkins-master
- -rw-r--r-- 1 root root 407 Nov  2 15:46 /etc/apache2/sites-available/jenkins-master
- lrwxrwxrwx 1 root root  33 Nov  2 15:46 /etc/apache2/sites-enabled/jenkins-master -> ../sites-available/jenkins-master
- root@sandbox:~#
-
-.. code-block:: console
-
- root@sandbox:~# /etc/init.d/apache2 restart
- [ ok ] Restarting web server: apache2 ... waiting .
- root@sandbox:~# 
-
-.. code-block:: console
-
- root@sandbox:~# htpasswd -c /etc/apache2/htpasswd.jenkins-master jenkins
- New password: 
- Re-type new password: 
- Adding password for user jenkins
- root@sandbox:~#
-
-jenkins-master の sphinx ディレクトリに接続するための apache2 の設定
---------------------------------------------------------------------
-
-.. code-block:: console
-
- root@sandbox:~# cat > /etc/apache2/sites-available/jenkins-master-sphinx 
- # 2012/11/05 d-higuchi
- 
- ProxyRequests		Off
- ProxyPass		/sphinx		http://192.168.122.11/sphinx
- ProxyPassReverse	/sphinx		http://192.168.122.11/sphinx
- 
- <Location /sphinx>
- 	order deny,allow
- 	deny from all
- 	allow from localhost
- 	# CL AKB
- 	allow from 219.117.239.160/27
- 	allow from 192.168.2.0/24
- 	# d-higuchi
- 	allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
- 	# j-hotta
- 	allow from 221.249.136.50/29
- 	# y-uemura
- 	allow from 124.35.220.7
- 	AuthUserFile	/etc/apache2/htpasswd.jenkins-master
- 	AuthName	jenkins-master
- 	AuthType	Basic
- 	Require		valid-user
- </Location>
- root@sandbox:~# 
-
-.. code-block:: console
-
- root@sandbox:~# a2ensite jenkins-master-sphinx
- Enabling site jenkins-master-sphinx.
- To activate the new configuration, you need to run:
-   service apache2 reload
- root@sandbox:~# /etc/init.d/apache2 restart
- [ ok ] Restarting web server: apache2 ... waiting .
- root@sandbox:~# 
-
-.. note::
-
- cookbook 管理が望ましい(TODO: 2012/11/05)
-
-redmine に接続するための apache2 の設定
----------------------------------------
-
-.. code-block:: console
-
- root@sandbox:~# cat > /etc/apache2/sites-available/redmine
- # 2012/11/19 d-higuchi
-
- ProxyRequests		Off
- ProxyPass		/redmine	http://192.168.122.21/redmine
- ProxyPassReverse	/redmine	http://192.168.122.21/redmine
-
- <Location /redmine>
-	order deny,allow
-	deny from all
-	allow from localhost
-	# CL AKB
-	allow from 219.117.239.160/27
-	allow from 192.168.2.0/24
-	# d-higuchi
-	allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
-	# j-hotta
-	allow from 221.249.136.50/29
-	# y-uemura
-	allow from 124.35.220.7
-	AuthUserFile	/etc/apache2/htpasswd.redmine
-	AuthName	redmine
-	AuthType	Basic
-	Require		valid-user
- </Location>
- root@sandbox:~# 
-
-.. code-block:: console
-
- root@sandbox:~# ls -l /etc/apache2/sites-*/redmine
- -rw-r--r-- 1 root root 538 Nov 19 16:16 /etc/apache2/sites-available/redmine
- root@sandbox:~# 
-
- root@sandbox:~# a2ensite redmine
- Enabling site redmine.
- To activate the new configuration, you need to run:
-   service apache2 reload
- root@sandbox:~# 
-
- root@sandbox:~# ls -l /etc/apache2/sites-*/redmine
- -rw-r--r-- 1 root root 538 Nov 19 16:16 /etc/apache2/sites-available/redmine
- lrwxrwxrwx 1 root root  26 Nov 19 16:17 /etc/apache2/sites-enabled/redmine -> ../sites-available/redmine
- root@sandbox:~#
-
-.. code-block:: console
-
- root@sandbox:~# /etc/init.d/apache2 restart
- [ ok ] Restarting web server: apache2 ... waiting .
- root@sandbox:~# 
-
-.. code-block:: console
-
- root@sandbox:~# htpasswd -c /etc/apache2/htpasswd.redmine redmine
- New password: 
- Re-type new password: 
- Adding password for user redmine
- root@sandbox:~# 
-
-jenkins-master の rabbit ディレクトリに接続するための apache2 の設定
---------------------------------------------------------------------
-
-.. code-block:: console
-
- root@sandbox:~# vi /etc/apache2/sites-available/jenkins-master-rabbit
- # 2012/11/21 d-higuchi
-
- ProxyRequests           Off
- ProxyPass               /rabbit         http://192.168.122.11/rabbit
- ProxyPassReverse        /rabbit         http://192.168.122.11/rabbit
-
- <Location /rabbit>
-        order deny,allow
-        deny from all
-        allow from localhost
-        # CL AKB
-        allow from 219.117.239.160/27
-        allow from 192.168.2.0/24
-        # d-higuchi
-        allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
-        allow from .tyma.nt.ftth4.ppp.infoweb.ne.jp
-        # j-hotta
-        allow from 221.249.136.50/29
-        # y-uemura
-        allow from 124.35.220.7
-        AuthUserFile    /etc/apache2/htpasswd.jenkins-master
-        AuthName        jenkins-master
-        AuthType        Basic
-        Require         valid-user
- </Location>
- root@sandbox:~#
-
-.. code-block:: console
-
- root@sandbox:~# a2ensite jenkins-master-rabbit
- Enabling site jenkins-master-rabbit.
- To activate the new configuration, you need to run:
-   service apache2 reload
- root@sandbox:~# /etc/init.d/apache2 reload
- [ ok ] Reloading web server config: apache2.
- root@sandbox:~#
 
 LVM バックアップのテスト
 ------------------------
