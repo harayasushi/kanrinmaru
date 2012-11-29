@@ -11,6 +11,7 @@ Contents:
 .. toctree::
    :maxdepth: 1
 
+   databag.rst
    kanrinmaru01.rst
    kanrinmaru02.rst
    kanrinmaru03.rst
