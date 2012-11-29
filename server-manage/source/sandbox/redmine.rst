@@ -23,28 +23,11 @@ run_list に追加
 - recipe[ntp]
 - recipe[postfix]
 - recipe[logwatch]
+- recipe[cl-etc-common::aliases]
+- recipe[cl-etc-common::hostname]
+- recipe[cl-etc-common::hosts-access]
 
 Web UI で行う。
-
-aliases の設定
---------------
-
-.. code-block:: console
-
- root@redmine:~# cp -a /etc/aliases /etc/aliases.2012-1119
- root@redmine:~# vi /etc/aliases
- root@redmine:~# diff -u /etc/aliases.2012-1119 /etc/aliases
- --- /etc/aliases.2012-1119	2012-11-19 15:21:53.312177824 +0900
- +++ /etc/aliases	2012-11-19 15:23:36.318338684 +0900
- @@ -1,2 +1,6 @@
-  # See man 5 aliases for format
-  postmaster:    root
- +
- +# 2012/11/19 d-higuchi add
- +root: solution@creationline.com
- +#
- root@redmine:~# newaliases 
- root@redmine:~# 
 
 redmine のインストール
 ----------------------

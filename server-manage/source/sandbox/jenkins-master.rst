@@ -23,27 +23,11 @@ run_list に追加
 - recipe[logwatch]
 - recipe[postfix]
 - recipe[ntp]
+- recipe[cl-etc-common::aliases]
+- recipe[cl-etc-common::hostname]
+- recipe[cl-etc-common::hosts-access]
 
 Web UI で行う。
-
-aliases の設定
---------------
-
-.. code-block:: console
-
- root@jenkins-master:~# cp -a /etc/aliases /etc/aliases.2012-1102
- root@jenkins-master:~# vi /etc/aliases
- root@jenkins-master:~# diff -u /etc/aliases.2012-1102 /etc/aliases
- --- /etc/aliases.2012-1102	2012-11-02 15:27:44.535908703 +0900
- +++ /etc/aliases	2012-11-02 15:30:02.871899935 +0900
- @@ -1,2 +1,5 @@
-  # See man 5 aliases for format
-  postmaster:    root
- +# 2012/11/02 d-higuchi add
- +root:	solution@creationline.com
- +#
- root@jenkins-master:~# newaliases 
- root@jenkins-master:~# 
 
 jenkins のインストール
 ----------------------
