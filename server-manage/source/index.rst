@@ -15,7 +15,6 @@ Contents:
    kanrinmaru01.rst
    kanrinmaru02.rst
    kanrinmaru03.rst
-   kanrinmaru07.rst
    sandbox.rst
    sandbox/jenkins-master.rst
    sandbox/redmine.rst
