@@ -98,3 +98,52 @@
 - PrimeDrive /咸臨丸@(uemura)/cl-chef-priv.sh
 
 -----------------------------------------------------------------------------
+11/30
+
+■NC研修
+* 発表資料
+- 最終版の確認と修正。
+
+■Scalr
+* ハンズオン資料
+- 確認と修正。
+
+■219.117.239.177 (kanrinmaru01 / Private Chef Server)
+* 共通箇所を Chef 管理下に移行。
+- https://github.com/cl-lab-k/cl-etc-common
+- PrimeDrive /咸臨丸@(uemura)/cl-chef-priv.sh
+* Chef リバースプロキシを Chef 管理下に移行。
+- https://github.com/cl-lab-k/cl-chef-proxy
+* Private Chef Server 自体のインストール
+- これは手作業するしかない？
+
+■219.117.239.178 (kanrinmaru02 / enStratus)
+* 共通箇所を Chef 管理下に移行。
+- https://github.com/cl-lab-k/cl-etc-common
+- PrimeDrive /咸臨丸@(uemura)/cl-chef-priv.sh
+- enStratus インストーラが /etc/hosts をいじるので
+  recipe[cl-etc-common:hostname] は追加しない。
+* enStratus 自体のインストール
+- これは手作業するしかない？
+
+■219.117.239.179 (kanrinmaru03 / scalr)
+* 共通箇所を Chef 管理下に移行。
+- https://github.com/cl-lab-k/cl-etc-common
+- PrimeDrive /咸臨丸@(uemura)/cl-chef-priv.sh
+* Scalr 自体のインストール
+- まだ未定。
+
+■翻訳
+* Debianの場合
+- po4a http://po4a.alioth.debian.org/ を使ってる。
+
+■git
+* git サーバを自前で持つ
+- http://git-scm.com/book/ja/Git-%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC
+- gitolite と gitweb を組み合わせるのがいい？
+
+■sphinx
+* chef-docs のビルドが遅い
+- sphinx-build が遅い。何か方法はないものか？
+
+-----------------------------------------------------------------------------
