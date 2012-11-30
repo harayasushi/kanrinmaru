@@ -60,6 +60,7 @@ run_list に追加
 - recipe[logwatch]
 - recipe[postfix]
 - recipe[ntp]
+- recipe[cl-etc-common::aliases]
 - recipe[cl-etc-common::hosts-access]
 
 Web UI で行う。
