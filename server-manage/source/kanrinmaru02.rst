@@ -43,7 +43,7 @@ FQDN の設定
 
 .. note::
 
- enStratus が /etc/hosts を書き換えることに注意。
+ enStratus インストーラが /etc/hosts を書き換えることに注意。
 
 Chef Client のインストールと Chef Private Server への登録
 ---------------------------------------------------------
@@ -60,9 +60,13 @@ run_list に追加
 - recipe[logwatch]
 - recipe[postfix]
 - recipe[ntp]
+- recipe[cl-etc-common::aliases]
 - recipe[cl-etc-common::hosts-access]
 
 Web UI で行う。
+
+enStratus インストーラが /etc/hosts を書き換えるので、
+recipe[cl-etc-common::hostname] は使わない。
 
 ファイアウォールの設定
 ----------------------
