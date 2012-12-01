@@ -136,11 +136,16 @@
 ■翻訳
 * Debianの場合
 - po4a http://po4a.alioth.debian.org/ を使ってる。
+* その他
+- Pootle https://translations.documentfoundation.org/
+- Damned Lies http://l10n.gnome.org/
 
 ■git
 * git サーバを自前で持つ
 - http://git-scm.com/book/ja/Git-%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC
 - gitolite と gitweb を組み合わせるのがいい？
+- http://www.atmarkit.co.jp/fjava/rensai4/devtool26/devtool26_1.html
+- http://dxd8.com/archives/220/
 
 ■sphinx
 * chef-docs のビルドが遅い
