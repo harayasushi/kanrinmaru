@@ -53,6 +53,16 @@ Web UI で run_list に追加。
  Adding password for user redmine
  root@sandbox:~# 
 
+以下の公開ディレクトリの ID/PW は都度変更すること。
+
+.. code-block:: console
+
+ root@sandbox:~# htpasswd -c /etc/apache2/htpasswd.public-storage public
+ New password: 
+ Re-type new password: 
+ Adding password for user public
+ root@sandbox:~# 
+
 LVM の設定
 ----------
 
