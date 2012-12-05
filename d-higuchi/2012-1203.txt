@@ -8,3 +8,56 @@
 - https://github.com/cl-lab-k/cl-gitlab
 
 -----------------------------------------------------------------------------
+12/04
+
+■cloudstack本
+* 査読
+- 気になった箇所を修正。
+
+■gitlab
+* cl-gitlab の微修正
+- https://github.com/cl-lab-k/cl-gitlab
+
+■219.117.239.188 (sandbox)
+* cl-reverse-proxy
+- https://github.com/cl-lab-k/cl-reverse-proxy
+- 公開ディレクトリ対応
+
+■192.168.122.11 (jenkins-master.akb-sb)
+* cl-jenkins
+- https://github.com/cl-lab-k/cl-jenkins
+- 公開ディレクトリ対応
+
+■219.117.239.178 (kanrinmaru02 / enStratus)
+* enStratus
+- インストールログを追加。
+
+-----------------------------------------------------------------------------
+12/05
+
+■NC研修
+* 2回目
+- workstation の日時がずれていると knife configure -iが失敗する。
+  → workstation の日付を確認すること。
+- KVM ホストの日時がずれていると knife cs server create が失敗する。
+  → CloudStack システムの日付を確認すること。
+- ruby1.8 で knife-cloudstack がインストールできなくなった。
+  → knife-cloudstack 0.0.13 で Windows サポートが入ったが、
+     それが依存しているライブラリが Ruby 1.9 でしか動かないため。
+     gem1.8 install knife-cloudstack --version '0.0.12' でインストールする。
+- ruby1.9.1 で knife-cloudstack がインストールできても動作しない。
+  → knife-cloudstack 0.0.13 で HTTPS サポートが入ったが、
+     うまく動いてない気がする。--no-use-http-ssl も効果がない。
+     gem1.9.1 install knife-cloudstack --version '0.0.12' でインストールする。
+- knife-cloudstack でインスタンスを作成するときに使った recipe/roles が
+  Chef Server に登録された node 情報の run_list に引き継がれていない。
+  → 勘違い。手動で node 情報の run_list に追加しないといけない。
+     http://wiki.opscode.com/display/chef/Launch+Cloud+Instances+with+Knife#LaunchCloudInstanceswithKnife-InstanceBootstrap
+     > Once the Chef run is complete, the new instance will be registered
+     > with the Chef Server and be saved as a node object. This process does
+     > not set up the Chef Client service, you'll need to add a recipe in the
+     > run list that does this.
+- PDF からコピペするとシングルクォートがいわゆる全角になる。
+  → latexpdf の問題？
+
+-----------------------------------------------------------------------------
