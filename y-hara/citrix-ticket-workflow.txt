@@ -1,0 +1,92 @@
+﻿#目標
+- チケットの処理フローを文章化して、最終的には原さんからこの仕事を引っぺがす(せるといいなあ・・・)
+- そのために、まずは文章化しておく (ファーストバージョンなのでここからリバイズ予定)
+
+----------------------------------------------------------------------------------------------------
+citrix チケット作業フロー ver.0.0.1 <by @y-hara>
+----------------------------------------------------------------------------------------------------
+1. チケット発行依頼を受け取る
+インフラチーム (須藤さん, 荒井さん etc..) からお二人宛にメールが届きますので, まずは内容を確認してください.
+この段階で記載されている内容に少しでも不明なことがあれば, "チケットを作成する前に"
+問い合わせるようにしてください.単純にトランスレートするのではなくて、技術的な内容を理解することが何よりも大切です。
+#ファースト・トゥ・ほうれんそう！
+
+2. salesforce にログインする
+
+以下のクレデンシャルでcitrix 問い合わせ用の salesforce にログインしてください:
+https://na6.salesforce.com/sserv/login.jsp?orgId=00D80000000LWom
+Username: creationline_kddi
+password: nU1q57PGa8pgOtoh
+
+3. チケットを作成する
+
+このとき、Citrix の方が理解しやすいように以下のポイントに留意して文章を再構築してください。
+
+- 何を問題としているか
+- 問題に再現性があるか
+- 問題はどのような環境下で発生するか
+- どのように解決を行う必要があるか, 解決方法を要求しているか否か
+
+- 問題が対象としているのは実運用環境か、テスト環境か
+
+- どのような環境下で運用しているか
+-- ハイパーバイザの種類
+-- CloudStack のバージョン
+-- 問題が特定のVM下で発生している場合
+--- ゲストOS の種類
+--- ゲストOS のバージョン
+
+また、問題の優先度, ハイパーバイザの種類などを指定する必要があります.
+それぞれ, 以下を指定してください
+
+Type:
+- Severity: 通常は2または3 を選択してください
+- Case Reason: ドロップダウンから適切な内容を選択してください
+- Callback Number: +81-3-5829-8356
+- ProductName: CloudPlatform
+- Product Version: 3.0.3 (3.0.5 に関するアップグレードの場合は 3.0.5 を指定すること [要確認])
+- Hypervisor: KVM  (VMware 増設案件の場合は VMware ESX/ESXi)
+- Hypervisor version: KVM (RHEL6.2, VMware 増設案件の場合は ESX5 )
+
+- Subject: 問題の題名を指定してください
+--(問題に理解のある担当者をアサインしてもらうためには、このタイトルで具体的に何を問題としているのか明確にする必要があります)
+- Description: 先ほど作成した文章をここに入力してください
+- Attachment : 多くの場合、問題解決を迅速に行うために management-server.log を送付する必要があります.
+ただし, こちらは salesforce 上には直接アップロードできないので、以下のレポジトリにアップロードしてください.
+
+また、management-server.log など関連するログを提出する必要が有る場合、primedrive
+を使うか、以下のレポジトリにアップロードしてください
+
+-----------------------------------------------------
+(引用: citrix 毛利さんメール)
+
+Logon to the FTP server (ftp://ftpsupport.citrix.com) using the
+following credentials:
+Login: ftp_user
+Password: customer_1
+
+For example: ftp://ftp_user:customer_1@ftpsupport.citrix.com
+
+Change directories to /SupportGlobal/<SupportAPAC or SupportEMEA or
+SupportAmericas>
+For example: ftp://ftpsupport.citrix.com/SupportGlobal/SupportAPAC/
+Compress all files into one package and insert the case number in
+front of the file name (prepend case number)
+Filename format example:
+Original filename: status-report-2009-02-09-09-38-52.zip
+Rename to: <SR_number>-status-report-2009-02-09-09-38-52.zip
+CloudStack customers should rename files to: <SFDC_number>-filename.zip
+Upload the file
+Send an email to the Technical Support Engineer notifying them the
+files have been uploaded.
+
+------------------------------------------------------
+
+4. チケット作成を報告する
+ 1. でチケット依頼を受けた担当者に、メールにて報告してください.
+
+5. チケットを更新する
+  Citrix からリプライがありますので、内容を翻訳して、チケットの起票者に伝えて下さい.
+  同一チケットの内容に関して追加の質問がある場合には、適宜1から4 の作業を繰り返してください.
+
+----------------------------------------------------------------------------------------------------
