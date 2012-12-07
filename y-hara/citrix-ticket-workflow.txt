@@ -15,8 +15,8 @@ citrix チケット作業フロー ver.0.0.1 <by @y-hara>
 
 以下のクレデンシャルでcitrix 問い合わせ用の salesforce にログインしてください:
 https://na6.salesforce.com/sserv/login.jsp?orgId=00D80000000LWom
-Username: creationline_kddi
-password: nU1q57PGa8pgOtoh
+Username: *****************
+password: *****************
 
 3. チケットを作成する
 
